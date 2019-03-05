@@ -1,0 +1,13 @@
+normalise <- function(T){
+# NORMALISE Make the entries of a (multidimensional) array sum to 1
+# [M, c] = normalise(M)
+#
+# This function uses the British spelling to avoid any confusion with
+# 'normalize_pot', which is a method for potentials.
+########################################################################  
+  c = sum(T)
+  # Set any zeros to one before dividing
+  d = c + (c==0)
+  T = T / d
+  return(list(T,c))
+}
