@@ -78,7 +78,7 @@ p = 3 # dimension of beta' (order of the polynomial regressors)
 # options
 #type_variance = 'homoskedastic'
 type_variance = 'hetereskedastic'
-nbr_EM_tries = 3
+nbr_EM_tries = 1
 max_iter_EM = 1500
 threshold = 1e-6
 verbose = 1
@@ -116,8 +116,8 @@ hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshol
 #      end
 
 source("show_HMMR_results.R")
-yaxislim = c(240,600)
-show_HMMR_results(x,y,hmmr,yaxislim)
+#yaxislim = c(240,600)
+show_HMMR_results(x,y,hmmr)
 
 # sample an HMMR
 source("sample_hmmr.R")

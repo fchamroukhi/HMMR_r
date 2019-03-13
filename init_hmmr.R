@@ -91,29 +91,30 @@ init_hmmr_regressors <- function (X, y, K, type_variance, EM_try){
     Lmin= P+1#minimum length of a segment #10
     tk_init = rep(c(0),K)
     tk_init = t(tk_init)
-    tk_init(1) = 0
+    tk_init[1] = 0
     K_1=K
     for (k in 2:K){
       K_1 = K_1-1
-      temp = tk_init(k-1)+sum(Lmin:m)-K_1*Lmin
-      ind = randperm(length(temp))
-      tk_init[k]= temp(ind(1))
+      temp = seq(tk_init[k-1]+Lmin,m-K_1*Lmin)
+      ind = sample(1:length(temp),length(temp))
+      tk_init[k]= temp[ind[1]]
     }
-    tk_init[k+1] = m
+    tk_init[K+1]=m
     
     s=0#
     for (k in 1:K){
       i = tk_init[k]+1
       j = tk_init[k+1]
-      yk = y(i:j)#y((k-1)*zi+1:k*zi);
-      Xk = X[i:j,]#X((k-1)*zi+1:k*zi,:);
+      yk = y[i:j]
+      Xk = X[i:j,]
       betak[,k] = solve(t(Xk)%*%Xk + 1e-4*diag(P))%*%t(Xk)%*%yk #regress(yk,Xk); # for a use in octave, where regress doesnt exist
       muk = Xk%*%betak[,k]
-      sk = t(yk-muk)*(yk-muk)
+      sk = t(yk-muk)%*%(yk-muk)
       
       if (homoskedastic==1){
         s = s+sk
         sigma2 = s/m
+        
       }
       else{
         sigma2k[k] = sk/length(yk)

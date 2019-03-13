@@ -145,7 +145,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   while (nb_good_try < total_EM_tries){
     start_time = Sys.time()
     if (total_EM_tries>1){
-      paste('EM try n°',(nb_good_try+1))
+      print(paste('EM try n°',(nb_good_try+1)))
     }
     total_nb_try=total_nb_try+1
     
@@ -188,7 +188,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
         muk[,k] = mk
         # the regressors means
         if (homoskedastic==1){
-          sk = sigma2
+          sk = as.vector(sigma2)
         }
         else{
           sk = sigma2k[k]
@@ -221,12 +221,12 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
       # transition matrix: P(Zt=i|Zt-1=j) (A_{k\ell})
       #print(cbind(apply(xi_tkl[,,1],2,sum),apply(xi_tkl[,,2],2,sum),apply(xi_tkl[,,3],2,sum)))
       # print(xi_tkl[,,1])
-
-      trans_mat = round(mk_stochastic(cbind(apply(xi_tkl[,,1],2,sum),
-                                      apply(xi_tkl[,,2],2,sum),
-                                      apply(xi_tkl[,,3],2,sum),
-                                      apply(xi_tkl[,,4],2,sum),
-                                      apply(xi_tkl[,,5],2,sum))),4)
+      trans=NULL
+      for (k in 1:K){
+        trans = cbind(trans,apply(xi_tkl[,,k],2,sum))
+      }
+      
+      trans_mat = round(mk_stochastic(trans),4)
       
       # for segmental HMMR: p(z_t = k| z_{t-1} = \ell) = zero if k<\ell (no back) of if k >= \ell+2 (no jumps)
       trans_mat = mk_stochastic(Mask*trans_mat)
@@ -263,18 +263,17 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
       loglik = loglik + log(lambda)
       
       if (verbose==1){
-        paste('HMM_regression | EM   : Iteration :', iter,' Log-likelihood : ', loglik)
+        print(paste('HMM_regression | EM   : Iteration :', iter,' Log-likelihood : ', loglik))
       }
-      
+      print(loglik)
       if (prev_loglik-loglik > 1e-4){
         top = top+1;
         if (top==10){
-          stop(paste('!!!!! The loglikelihood is decreasing from',prev_loglik,' to ',loglik))
+          stop(print(paste('!!!!! The loglikelihood is decreasing from',prev_loglik,' to ',loglik)))
         }
       }
       converged = (abs(loglik - prev_loglik)/abs(prev_loglik) < threshold)
       stored_loglik[iter] <-loglik
-      print(stored_loglik)
       prev_loglik = loglik
       end_time=Sys.time()
       cputime_total[nb_good_try+1]=c(end_time-start_time)
@@ -305,7 +304,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
                xi_tkl=xi_tkl,f_tk=f_tk,log_f_tk=log_f_tk,loglik=loglik,stored_loglik=stored_loglik,X=X)
     
     if (total_EM_tries>1){
-      paste('loglik_max = ',loglik)
+      print(paste('loglik_max = ',loglik))
     }
     #
     #
@@ -319,7 +318,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
     }
     
     if (total_nb_try > 500){
-      paste('can',"'",'t obtain the requested number of classes')
+      print(paste('can',"'",'t obtain the requested number of classes'))
       hmmr=NULL
       return(hmmr)
     }
@@ -331,7 +330,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   
   #
   if (total_EM_tries>1){
-    paste('best_loglik:  ',stats$loglik)
+    print(paste('best_loglik:  ',stats$loglik))
   }
   #
   #
