@@ -99,25 +99,40 @@ x = tmp$x
 y = tmp$y
 
 source("learn_hmmr.R")
-hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
+#if model selection
+classe=2:8
+poly=1:4
+bic=matrix(c(0),length(classe),length(poly))
+current_BIC = -99999
+for (K in classe){
+  for (p in poly){
+    hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
+    
+    if (hmmr$stats$BIC > current_BIC){
+      best_hmmr = hmmr
+      current_BIC = hmmr$stats$BIC
+    }
+    bic[K,p] = hmmr$stats$BIC
+  }
+}
 
-      #if model selection
-#      current_BIC = -inf;
-#      for K=1:8
-#          for p=0:4
-#              HMMR_Kp = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
-#  
-#              if HMMR_Kp.stats.BIC>current_BIC
-#                  HMMR=HMMR_Kp;
-#                  current_BIC = HMMR_Kp.stats.BIC;
-#              end
-#                  bic(K,p+1) = HMMR_Kp.stats.BIC;
-#          end
-#      end
+colors = c("red","blue","green","pink","cadetblue2","orange","blue4","chartreuse4","brown2","cadetblue4")
+x11()
+plot(classe,bic[,1],type="l",ylab="BIC",xlab="K",main="Sélection de modèle")
+for (p in 2:length(poly)){
+  lines(classe,bic[,p],type="l",col=colors[p])
+}
+legend(5,10,legend=c(1:length(poly)),col=colors[1:length(poly)], lty=1:2, cex=0.8)
 
-source("show_HMMR_results.R")
-#yaxislim = c(240,600)
-show_HMMR_results(x,y,hmmr)
+#K=
+#p=
+#hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
+
+
+
+# source("show_HMMR_results.R")
+# #yaxislim = c(240,600)
+#show_HMMR_results(x,y,hmmr)
 
 # sample an HMMR
 source("sample_hmmr.R")

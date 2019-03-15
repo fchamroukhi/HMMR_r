@@ -37,6 +37,7 @@ init_hmmr <- function(X, y, K, type_variance, EM_try){
 
 # Initialisation de la matrice des transitions
   Mask = (0.5)*diag(K) #masque d'ordre 1
+  
   for (k in 1:(K-1)) {
     ind = which(Mask[k,] != 0)
     Mask[k,ind+1] = 0.5
@@ -46,7 +47,7 @@ init_hmmr <- function(X, y, K, type_variance, EM_try){
 # Initialisation de la loi initiale de la variable cachee
   hmmr.prior = t(c(1,rep(0,K-1)))
   hmmr.stats.Mask = Mask
-
+  
 #  Initialisation des coeffecients de regression et des variances.
   reg_param = init_hmmr_regressors(X, y, K, type_variance, EM_try)
   
