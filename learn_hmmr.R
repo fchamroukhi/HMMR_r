@@ -266,12 +266,13 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
         print(paste('HMM_regression | EM   : Iteration :', iter,' Log-likelihood : ', loglik))
       }
       
-      if ((prev_loglik-loglik) > 1e-4){
+      if (((prev_loglik-loglik) > 1e-4)){
         top = top+1;
         if (top==10){
           stop(print(paste('!!!!! The loglikelihood is decreasing from',prev_loglik,' to ',loglik)))
         }
       }
+      
       converged = (abs(loglik - prev_loglik)/abs(prev_loglik) < threshold)
       stored_loglik[iter] <-loglik
       prev_loglik = loglik

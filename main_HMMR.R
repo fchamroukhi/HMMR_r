@@ -69,11 +69,11 @@
 ##############################################################################################
 shell("cls") #efface la console
 rm(list=ls())#efface les variables
-#setwd("C:/Users/simon/Desktop/projet/HMMR-master/HMMR-master/R") #Repertoire de travail
+#setwd("") #Repertoire de travail
 
 #model specification
 K = 5 # nomber of regimes (states)
-p = 3 # dimension of beta' (order of the polynomial regressors)
+p = 2 # dimension of beta' (order of the polynomial regressors)
 
 # options
 #type_variance = 'homoskedastic'
@@ -99,40 +99,38 @@ x = tmp$x
 y = tmp$y
 
 source("learn_hmmr.R")
-#if model selection
-classe=2:8
-poly=1:4
-bic=matrix(c(0),length(classe),length(poly))
-current_BIC = -99999
-for (K in classe){
-  for (p in poly){
-    hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
-    
-    if (hmmr$stats$BIC > current_BIC){
-      best_hmmr = hmmr
-      current_BIC = hmmr$stats$BIC
-    }
-    bic[K,p] = hmmr$stats$BIC
-  }
-}
 
-colors = c("red","blue","green","pink","cadetblue2","orange","blue4","chartreuse4","brown2","cadetblue4")
-x11()
-plot(classe,bic[,1],type="l",ylab="BIC",xlab="K",main="Sélection de modèle")
-for (p in 2:length(poly)){
-  lines(classe,bic[,p],type="l",col=colors[p])
-}
-legend(5,10,legend=c(1:length(poly)),col=colors[1:length(poly)], lty=1:2, cex=0.8)
+# #model selection
+# classe=2:7
+# poly=2:3
+# bic=matrix(c(0),length(classe),length(poly))
+# current_BIC = -99999
+# for (K in classe){
+#   for (p in poly){
+#     print(paste("K=",K,"p=",p))
+#     hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
+# 
+#     if (hmmr$stats$BIC > current_BIC){
+#       best_hmmr = hmmr
+#       current_BIC = hmmr$stats$BIC
+#     }
+#     bic[(K-1),(p-1)] = hmmr$stats$BIC
+#   }
+# }
+# 
+# colors = c("red","blue","green","pink","cadetblue2","orange","blue4","chartreuse4","brown2","cadetblue4")
+# x11()
+# plot(classe,bic[,1],type="l",col=colors[1],ylab="BIC",xlab="K",main="Sélection de modèle")
+# for (p in 2:length(poly)){
+#   lines(classe,bic[,p],type="l",col=colors[p])
+# }
+# legend(2,y=-1150,legend=c(min(poly):max(poly)),col=colors[1:length(poly)], lty=1:2, cex=0.8)
 
-#K=
-#p=
-#hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
+hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
 
-
-
-# source("show_HMMR_results.R")
+source("show_HMMR_results.R")
 # #yaxislim = c(240,600)
-#show_HMMR_results(x,y,hmmr)
+show_HMMR_results(x,y,hmmr)
 
 # sample an HMMR
 source("sample_hmmr.R")
