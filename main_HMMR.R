@@ -15,14 +15,14 @@
 # 
 # @article{Chamroukhi-FDA-2018,
 # 	Journal = {Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery},
-# 	Author = {Faicel Chamroukhi and Hien D. Nguyen},
-# 	Note = {DOI: 10.1002/widm.1298.},
-# 	Volume = {},
+#	  Author = {Faicel Chamroukhi and Hien D. Nguyen},
+#	  Note = {DOI: 10.1002/widm.1298.},
+#	  Volume = {},
 # 	Title = {Model-Based Clustering and Classification of Functional Data},
-# 	Year = {2019},
-# 	Month = {to appear},
-# 	url =  {https://chamroukhi.com/papers/MBCC-FDA.pdf}
-# 	}
+#	  Year = {2018},
+#	  Month = {Dec},
+#	  url =  {https://chamroukhi.com/papers/MBCC-FDA.pdf}
+#	}
 # 
 # @InProceedings{Chamroukhi-IJCNN-2011,
 #   author = {F. Chamroukhi and A. Sam\'e  and P. Aknin and G. Govaert},
@@ -120,7 +120,7 @@ source("learn_hmmr.R")
 # 
 # colors = c("red","blue","green","pink","cadetblue2","orange","blue4","chartreuse4","brown2","cadetblue4")
 # x11()
-# plot(classe,bic[,1],type="l",col=colors[1],ylab="BIC",xlab="K",main="Sélection de modèle")
+# plot(classe,bic[,1],type="l",col=colors[1],ylab="BIC",xlab="K",main="S?lection de mod?le")
 # for (p in 2:length(poly)){
 #   lines(classe,bic[,p],type="l",col=colors[p])
 # }
