@@ -1,4 +1,4 @@
-# User-freindly and flexible model anf algorithm for time series segmentation with a Regression
+# User-friendly and flexible model anf algorithm for time series segmentation with a Regression
 # model with a Hidden Markov Model Regression (HMMR).
 #
 #
@@ -67,71 +67,29 @@
 #
 # Faicel Chamroukhi Septembre 2008.
 ##############################################################################################
-rm(list=ls())#efface les variables
-#setwd("") #Repertoire de travail
 
-#model specification
-K = 5 # nomber of regimes (states)
-p = 2 # dimension of beta' (order of the polynomial regressors)
+rm(list=ls())
+source("R/enums.R")
+source("R/FData.R")
+source("R/ModelHMMR.R")
+source("R/ModelLearner.R")
 
-# options
-#type_variance = 'homoskedastic'
-type_variance = 'hetereskedastic'
-nbr_EM_tries = 1
-max_iter_EM = 1500
-threshold = 1e-6
-verbose = 1
+# Building matrices for regression
+load("data/simulatedTimeSeries.RData")
+fData <- FData$new()
+fData$setData(X, Y)
+
+
+K <- 5 # number of regimes (states)
+p <- 2 # dimension of beta (order of the polynomial regressors)
+variance_type <- variance_types$hetereskedastic
+
+modelHMMR <- ModelHMMR(fData, K, p)
+
+nbr_EM_tries <- 1
+max_iter_EM <- 1500
+threshold <- 1e-6
+verbose <- TRUE
 type_algo = 'EM'
-#type_algo = 'CEM'
-#type_algo = 'SEM'
 
-## toy time series with regime changes
-# y =[randn(100,1); 7+randn(120,1);4+randn(200,1); -2+randn(100,1); 3.5+randn(150,1);]'
-# n = length(y)
-# x = linspace(0,1,n)
-
-library(R.matlab)
-tmp = readMat("simulated_time_series.mat")
-#tmp = readMat("real_time_series_1.mat")
-#tmp = readMat("real_time_series_2.mat")
-x = tmp$x
-y = tmp$y
-
-source("learn_hmmr.R")
-
-# #model selection
-# classe=2:7
-# poly=2:3
-# bic=matrix(c(0),length(classe),length(poly))
-# current_BIC = -99999
-# for (K in classe){
-#   for (p in poly){
-#     print(paste("K=",K,"p=",p))
-#     hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
-#
-#     if (hmmr$stats$BIC > current_BIC){
-#       best_hmmr = hmmr
-#       current_BIC = hmmr$stats$BIC
-#     }
-#     bic[(K-1),(p-1)] = hmmr$stats$BIC
-#   }
-# }
-#
-# colors = c("red","blue","green","pink","cadetblue2","orange","blue4","chartreuse4","brown2","cadetblue4")
-# x11()
-# plot(classe,bic[,1],type="l",col=colors[1],ylab="BIC",xlab="K",main="S?lection de mod?le")
-# for (p in 2:length(poly)){
-#   lines(classe,bic[,p],type="l",col=colors[p])
-# }
-# legend(2,y=-1150,legend=c(min(poly):max(poly)),col=colors[1:length(poly)], lty=1:2, cex=0.8)
-
-hmmr = learn_hmmr(x, y, K, p, type_variance, nbr_EM_tries, max_iter_EM, threshold, verbose)
-
-source("show_HMMR_results.R")
-# #yaxislim = c(240,600)
-show_HMMR_results(x,y,hmmr)
-
-# sample an HMMR
-source("sample_hmmr.R")
-#sample = sample_hmmr(x, hmmr$prior, hmmr$trans_mat, hmmr$reg_param$betak,hmmr$reg_param$sigma2k)
-
+solution <- EM(modelHMMR, nbr_EM_tries, max_iter_EM, threshold, verbose)

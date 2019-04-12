@@ -1,5 +1,5 @@
 learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, threshold, verbose){
-  
+
   # learn_hmmr learn a Regression model with a Hidden Markov Process (HMMR)
   # for modeling and segmentation of a time series with regime changes.
   # The learning is performed by the EM (Baum-Welch) algorithm.
@@ -50,11 +50,11 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   #           smoothed: [nx1]
   #
   #
-  #Faicel Chamroukhi, sept 2008 
+  #Faicel Chamroukhi, sept 2008
   #
   ## Please cite the following papers for this code:
   #
-  # 
+  #
   # @article{Chamroukhi-FDA-2018,
   # 	Journal = {Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery},
   # 	Author = {Faicel Chamroukhi and Hien D. Nguyen},
@@ -65,7 +65,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   # 	Month = {to appear},
   # 	url =  {https://chamroukhi.com/papers/MBCC-FDA.pdf}
   # 	}
-  # 
+  #
   # @InProceedings{Chamroukhi-IJCNN-2011,
   #   author = {F. Chamroukhi and A. Sam\'e  and P. Aknin and G. Govaert},
   #   title = {Model-based clustering with Hidden Markov Model regression for time series with regime changes},
@@ -76,7 +76,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   #   month = {Jul-Aug},
   #   url = {https://chamroukhi.com/papers/Chamroukhi-ijcnn-2011.pdf}
   # }
-  # 
+  #
   # @INPROCEEDINGS{Chamroukhi-IJCNN-2009,
   #   AUTHOR =       {Chamroukhi, F. and Sam\'e,  A. and Govaert, G. and Aknin, P.},
   #   TITLE =        {A regression model with a hidden logistic process for feature extraction from time series},
@@ -88,7 +88,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   #  url = {https://chamroukhi.com/papers/chamroukhi_ijcnn2009.pdf},
   #  slides = {./conf-presentations/presentation_IJCNN2009}
   # }
-  # 
+  #
   # @article{chamroukhi_et_al_NN2009,
   # 	Address = {Oxford, UK, UK},
   # 	Author = {Chamroukhi, F. and Sam\'{e}, A. and Govaert, G. and Aknin, P.},
@@ -103,10 +103,10 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   # 	Year = {2009},
   # 	url  = {https://chamroukhi.users.lmno.cnrs.fr/papers/Chamroukhi_Neural_Networks_2009.pdf}
   # 	}
-  # 
+  #
   ##########################################################################################
   options(warn=-1)
-  
+
   if (nargs()<9){verbose =0}
   if (nargs()<8){threshold = 1e-6}
   if (nargs()<7){max_iter_EM = 1500}
@@ -116,8 +116,8 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   if (type_variance == 'homoskedastic'){homoskedastic =1}
   else if (type_variance == 'hetereskedastic'){homoskedastic=0}
   else{stop('The type of the model variance should be : "homoskedastic" or "hetereskedastic"')}
-  
-  #Chargement de toutes les fonctions à utiliser
+
+  #Chargement de toutes les fonctions ? utiliser
   source("designmatrix.R")
   source("init_hmmr.R")
   source("forwards_backwards.R")
@@ -125,36 +125,36 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   source("mk_stochastic.R")
   source("MAP.R")
   source("hmm_process.R")
-  
+
   if (ncol(y)!=1){
     y=t(y)
-  } 
-  
+  }
+
   m = length(y)#length(y)
 
   X = designmatrix(x,p)#design matrix
   P = ncol(X)# here P is p+1
   I = diag(P)# define an identity matrix, in case of a Bayesian regularization for regression
-  
+
   #
   best_loglik = -10000000
   nb_good_try=0
   total_nb_try=0
   cputime_total=c()
-  
+
   while (nb_good_try < total_EM_tries){
     start_time = Sys.time()
     if (total_EM_tries>1){
-      print(paste('EM try n°',(nb_good_try+1)))
+      print(paste("EM try n?",(nb_good_try+1)))
     }
     total_nb_try=total_nb_try+1
-    
+
     ## EM Initializaiton step
     ## Initialization of the Markov chain params, the regression coeffs, and the variance(s)
     HMMR = init_hmmr(X, y, K, type_variance, nb_good_try+1)
-    
+
     # calculare the initial post probs  (tau_tk) and joint post probs (xi_ikl)
-    
+
     #f_tk = hmmr.stats.f_tk; # observation component densities: f(yt|zt=k)
     prior = HMMR[[1]]
     trans_mat = HMMR[[3]]
@@ -171,7 +171,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
     prev_loglik = -100000
     converged = 0
     top = 0
-    
+
     #
     log_f_tk = matrix(c(0),m,K)
     muk = matrix(c(0),m,K)
@@ -181,7 +181,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
     while ((iter <= max_iter_EM) & (converged!=1)){
       ## E step : calculate tge tau_tk (p(Zt=k|y1...ym;theta)) and xi t_kl (and the log-likelihood) by
       #  forwards backwards (computes the alpha_tk et beta_tk)
-      
+
       # observation likelihoods
       for (k in 1:K){
         mk = X%*%betak[,k]
@@ -195,7 +195,7 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
         }
         z=((y - mk)^2)/sk
         log_f_tk[,k] =  -0.5*matrix(c(1),m,1)%*%(log(2*pi)+log(sk)) - 0.5*z#log(gaussienne)
-        
+
       }
       for (k in 1:K){
         for (i in 1:nrow(log_f_tk)){
@@ -204,16 +204,16 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
         }
       }
       f_tk = exp(log_f_tk)
-      
+
       #fprintf(1, 'forwards-backwards ');
-      #[tau_tk, xi_tkl, alpha_tk, beta_tk, loglik] = 
+      #[tau_tk, xi_tkl, alpha_tk, beta_tk, loglik] =
       fb=forwards_backwards(prior, trans_mat , f_tk )
       tau_tk=fb[[1]]
       xi_tkl=fb$xi_tkl
       alpha_tk=fb[[3]]
       beta_tk=fb[[4]]
       loglik=fb[[5]]
-      
+
       ## M step
       #  updates of the Markov chain parameters
       # initial states prob: P(Z_1 = k)
@@ -225,9 +225,9 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
       for (k in 1:K){
         trans = cbind(trans,apply(xi_tkl[,,k],2,sum))
       }
-      
+
       trans_mat = round(mk_stochastic(trans),4)
-      
+
       # for segmental HMMR: p(z_t = k| z_{t-1} = \ell) = zero if k<\ell (no back) of if k >= \ell+2 (no jumps)
       trans_mat = mk_stochastic(Mask*trans_mat)
       ##  update of the regressors (reg coefficients betak and the variance(s) sigma2k)
@@ -235,16 +235,16 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
       s = 0 # if homoskedastic
       for (k in 1:K){
         wieghts = tau_tk[,k]
-        
+
         nk = sum(wieghts)# expected cardinal nbr of state k
         Xk = X*(sqrt(wieghts)%*%matrix(c(1),1,P))#[n*(p+1)]
         yk=y*(sqrt(wieghts))# dimension :[(nx1).*(nx1)] = [nx1]
-        
+
         # reg coefficients
         lambda = 1e-9 # if a bayesian prior on the beta's
         bk = (solve(t(Xk)%*%Xk + lambda*diag(P))%*%t(Xk))%*%yk
         betak[,k] = bk
-        
+
         # variance(s)
         z = sqrt(wieghts)*(y-X%*%bk)
         sk = t(z)%*%z
@@ -258,39 +258,39 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
       }
       ## En of an EM iteration
       iter =  iter + 1
-      
+
       # test of convergence
       loglik = loglik + log(lambda)
-      
+
       if (verbose==1){
         print(paste('HMM_regression | EM   : Iteration :', iter,' Log-likelihood : ', loglik))
       }
-      
+
       if (((prev_loglik-loglik) > 1e-4)){
         top = top+1;
         if (top==10){
           stop(print(paste('!!!!! The loglikelihood is decreasing from',prev_loglik,' to ',loglik)))
         }
       }
-      
+
       converged = (abs(loglik - prev_loglik)/abs(prev_loglik) < threshold)
       stored_loglik[iter] <-loglik
       prev_loglik = loglik
       end_time=Sys.time()
       cputime_total[nb_good_try+1]=c(end_time-start_time)
     }
-    
+
     reg_param=list(betak=betak)
-    
+
     if (homoskedastic==1){
       reg_param = append(reg_param,list(sigma2=sigma2))
     }
     else{
       reg_param = append(reg_param,list(sigma2k=sigma2k))
     }
-    
+
     hmmr=list(prior=prior,trans_mat=trans_mat,reg_param=reg_param)
-    
+
     # Estimated parameter vector (Pi,A,\theta)
     if (homoskedastic==1){
       parameter_vector=c(prior, trans_mat[Mask!=0],c(betak[1:P,]), sigma2)
@@ -300,10 +300,10 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
       parameter_vector=c(prior, trans_mat[Mask!=0],c(betak[1:P,]), sigma2k)
       nu = K-1 + K*(K-1) + K*(p+1) + K #length(parameter_vector);#
     }
-    
+
     stats=list(nu=nu,parameter_vector=parameter_vector,tau_tk=tau_tk,alpha_tk=alpha_tk,beta_tk=beta_tk,
                xi_tkl=xi_tkl,f_tk=f_tk,log_f_tk=log_f_tk,loglik=loglik,stored_loglik=stored_loglik,X=X)
-    
+
     if (total_EM_tries>1){
       print(paste('loglik_max = ',loglik))
     }
@@ -317,18 +317,18 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
         best_loglik = loglik
       }
     }
-    
+
     if (total_nb_try > 500){
       print(paste('can',"'",'t obtain the requested number of classes'))
       hmmr=NULL
       return(hmmr)
     }
-    
-    
+
+
   }#End of the EM runs
-  
+
   hmmr = best_hmmr
-  
+
   #
   if (total_EM_tries>1){
     print(paste('best_loglik:  ',stats$loglik))
@@ -336,16 +336,16 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   #
   #
   stats=append(stats,list(cputime=mean(cputime_total),cputime_total=cputime_total))
-  
+
   ## Smoothing state sequences : argmax(smoothing probs), and corresponding binary allocations partition
   stats=append(stats,MAP(stats$tau_tk)) #[hmmr.stats.klas, hmmr.stats.Zik ]
-  
+
   # #  compute the sequence with viterbi
   # #[path, ~] = viterbi_path(hmmr.prior, hmmr.trans_mat, hmmr.stats.fik');
   # #hmmr.stats.viterbi_path = path;
   # #hmmr.stats.klas = path;
   # ###################
-  # 
+  #
   # # ## determination des temps de changements (les fontiÃ¨tres entres les
   # # ## classes)
   # # nk=sum(hmmr.stats.Zik,1);
@@ -353,11 +353,11 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   # #     tk(k) = sum(nk(1:k));
   # # end
   # # hmmr.stats.tk = [1 tk];
-  # 
+  #
   # ## sate sequence prob p(z_1,...,z_n;\pi,A)
   state_probs = hmm_process(hmmr$prior, hmmr$trans_mat, m)
   stats = append(stats,list(state_probs=state_probs))
-  
+
   ### BIC, AIC, ICL
   stats = append(stats,list(BIC=(stats$loglik - (stats$nu*log(m)/2))))
   stats = append(stats,list(AIC=(stats$loglik - stats$nu)))
@@ -366,25 +366,25 @@ learn_hmmr<- function(x, y, K, p,type_variance, total_EM_tries, max_iter_EM, thr
   # comp_loglik = sum(sum_t_log_Pz_ftk(K:end));
   # hmmr.stats.comp_loglik = comp_loglik;
   # hmmr.stats.ICL = comp_loglik - (nu*log(m)/2);
-  
+
   ## predicted, filtered, and smoothed time series
   stats = append(stats,list(regressors = round(X%*%hmmr$reg_param$betak,4)))
-  
+
   # prediction probs   = Pr(z_t|y_1,...,y_{t-1})
   predict_prob = matrix(c(0),m,K)
   predict_prob[1,] = hmmr$prior#t=1 p (z_1)
   predict_prob[2:m,] = round((stats$alpha_tk[(1:(m-1)),]%*%hmmr$trans_mat)/(apply(stats$alpha_tk[(1:(m-1)),],1,sum)%*%matrix(c(1),1,K)),5)#t =2,...,n
   stats = append(stats,list(predict_prob = predict_prob))
-  
+
   # predicted observations
   stats = append(stats,list(predicted = apply(round(stats$predict_prob*stats$regressors,5),1,sum)))#pond par les probas de prediction
-  
+
   # filtering probs  = Pr(z_t|y_1,...,y_t)
   stats = append(stats,list(filter_prob = round(stats$alpha_tk/(apply(stats$alpha_tk,1,sum)%*%matrix(c(1),1,K)),5)))#normalize(alpha_tk,2);
-  
+
   # filetered observations
   stats = append(stats,list(filtered = apply(round(stats$filter_prob*stats$regressors,5), 1,sum)))#pond par les probas de filtrage
-  
+
   ### smoothed observations
   stats = append(stats,list(smoothed_regressors = stats$tau_tk*stats$regressors))
   stats =append(stats,list(smoothed = apply(stats$smoothed_regressors, 1,sum)))
