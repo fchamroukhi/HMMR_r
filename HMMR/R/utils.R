@@ -93,21 +93,21 @@ normalize <- function(A, dim) {
   # Dim = 2 normalize each row
 
   if (nargs() < 2) {
-    z = sum(A)
+    z <- sum(A)
     # Set any zeros to one before dividing
     # This is valid, since c = 0 ==> all i.A[i] = 0 ==> the anser should be 0/1 = 0.
-    s = z + (z == 0)
-    M = A / s
+    s <- z + (z == 0)
+    M <- A / s
   } else if (dim == 1) {
     # normalize each column
-    z = colSums(A)
-    s = z + (z == 0)
-    M = A / matrix(s, nrow = dim(A)[1], ncol = length(s), byrow = TRUE)
+    z <- colSums(A)
+    s <- z + (z == 0)
+    M <- A / matrix(s, nrow = dim(A)[1], ncol = length(s), byrow = TRUE)
   } else{
-    z = rowSums(A)
-    s = z + (z == 0)
-    M = A / matrix(s, ncol = dim(A)[2], nrow = length(s), byrow = FALSE)
+    z <- rowSums(A)
+    s <- z + (z == 0)
+    M <- A / matrix(s, ncol = dim(A)[2], nrow = length(s), byrow = FALSE)
   }
-  output = list("M" = M, "z" = z)
+  output <- list(M = M, z = z)
   return(output)
 }

@@ -16,11 +16,11 @@ ModelHMMR <- setRefClass(
 )
 
 ModelHMMR <- function(fData, K, p, q) {
-  if (variance_type == variance_types$homoskedastic){
-    nu <<- K-1 + K*(K-1) + K*(p+1) + 1
+  if (variance_type == variance_types$homoskedastic) {
+    nu <<- K - 1 + K * (K - 1) + K * (p + 1) + 1
   }
   else{
-    nu <<- K-1 + K*(K-1) + K*(p+1) + K
+    nu <<- K - 1 + K * (K - 1) + K * (p + 1) + K
   }
 
   new(
@@ -28,6 +28,7 @@ ModelHMMR <- function(fData, K, p, q) {
     Y = fData$Y,
     X = fData$X,
     m = fData$m,
+    n = fData$n,
     K = K,
     p = p,
     variance_type = variance_type,

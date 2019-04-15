@@ -4,7 +4,7 @@ FittedHMMR <- setRefClass(
     modelHMMR = "ModelHMMR",
     paramHMMR = "ParamHMMR",
     statHMMR = "StatHMMR"
-  ),
+  )
   # methods = list(
   #   plot = function() {
   #     par(mfrow = c(2, 1))
