@@ -1,5 +1,4 @@
 source("R/enums.R")
-source("R/normalise.R")
 source("R/mk_stochastic.R")
 # source("R/utils.R")
 # source("R/IRLS.R")
@@ -123,7 +122,7 @@ ParamHMMR <- setRefClass(
 
       #  updates of the Markov chain parameters
       # initial states prob: P(Z_1 = k)
-      prior <<- matrix(normalise(statHMMR$tau_tk[1,])$M)
+      prior <<- matrix(normalize(statHMMR$tau_tk[1,])$M)
       # transition matrix: P(Zt=i|Zt-1=j) (A_{k\ell})
       #print(cbind(apply(xi_tkl[,,1],2,sum),apply(xi_tkl[,,2],2,sum),apply(xi_tkl[,,3],2,sum)))
       # print(xi_tkl[,,1])
