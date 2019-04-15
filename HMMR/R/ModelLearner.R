@@ -41,7 +41,6 @@ EM <- function(modelHMMR, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbos
       ## M step
       param$MStep(modelHMMR, stat, phi)
 
-      stat$computeLikelihood(param)
       ## End of an EM iteration
 
       iter <-  iter + 1

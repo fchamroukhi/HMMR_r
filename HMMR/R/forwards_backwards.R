@@ -29,7 +29,7 @@ forwards_backwards <- function(prior, transmat, f_tk) {
     filter_only <- 0
   }
 
-  scale <- matrix(c(1), nrow = 1, ncol = N) #pour que loglik = sum(log(scale)) part de zero
+  scale <- matrix(1, nrow = 1, ncol = N) #pour que loglik = sum(log(scale)) part de zero
 
   prior <- prior
   tau_tk <- matrix(data = 0, nrow = N, ncol = K)

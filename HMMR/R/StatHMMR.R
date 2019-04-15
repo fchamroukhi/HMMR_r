@@ -13,7 +13,6 @@ StatHMMR <- setRefClass(
     loglik = "numeric", # loglik: log-likelihood at convergence
     stored_loglik = "list", # stored_loglik: stored log-likelihood values during EM
     cputime = "numeric", # cputime: for the best run
-    cputime_total = "list", # cputime_total: for all the EM runs
     klas = "matrix", # klas: [nx1 double]
     z_ik = "matrix", # z_ik: [nxK]
     state_probs = "matrix", # state_probs: [nxK]
@@ -139,7 +138,6 @@ StatHMMR <- function(modelHMMR) {
   loglik <- -Inf # loglik: log-likelihood at convergence
   stored_loglik <- list() # stored_loglik: stored log-likelihood values during EM
   cputime <- Inf # cputime: for the best run
-  cputime_total <- list() # cputime_total: for all the EM runs
   klas <- matrix(NA, modelHMMR$m, 1) # klas: [nx1 double]
   z_ik <- matrix(NA, modelHMMR$m, modelHMMR$K) # z_ik: [nxK]
   state_probs <- matrix(NA, modelHMMR$m, modelHMMR$K) # state_probs: [nxK]
@@ -164,7 +162,6 @@ StatHMMR <- function(modelHMMR) {
     loglik = loglik,
     stored_loglik = stored_loglik,
     cputime = cputime,
-    cputime_total = cputime_total,
     klas = klas,
     z_ik = z_ik,
     state_probs = state_probs,

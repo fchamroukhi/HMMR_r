@@ -67,9 +67,10 @@ ParamHMMR <- setRefClass(
         s <- 0
         for (k in 1:modelHMMR$K) {
           yk <- modelHMMR$Y[((k - 1) * zi + 1):(k * zi)]
-          Xk <- phi[((k - 1) * zi + 1):(k * zi), ]
+          Xk <- as.matrix(phi[((k - 1) * zi + 1):(k * zi), ])
 
           beta[, k] <<- solve(t(Xk) %*% Xk + (10 ^ -4) * diag(modelHMMR$p + 1)) %*% t(Xk) %*% yk # regress(yk,Xk); # for a use in octave, where regress doesnt exist
+
           muk <- Xk %*% beta[, k]
           sk <- t(yk - muk) %*% (yk - muk)
           if (modelHMMR$variance_type == variance_types$homoskedastic) {
