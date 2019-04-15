@@ -4,38 +4,80 @@ FittedHMMR <- setRefClass(
     modelHMMR = "ModelHMMR",
     paramHMMR = "ParamHMMR",
     statHMMR = "StatHMMR"
+  ),
+  methods = list(
+    plot = function() {
+      yaxislim <- c(mean(modelHMMR$Y) - 2 * sd(modelHMMR$Y), mean(modelHMMR$Y) + 2 * sd(modelHMMR$Y))
+
+      par(mfrow = c(2, 1))
+
+      # Predicted time series and predicted regime probabilities
+      plot.default(modelHMMR$Y, type = "l", ylab = "y", xlab = "", ylim = yaxislim)
+      lines(statHMMR$predicted, type = "l", lwd = 2, col = "red")
+      title(main = "Original and predicted HMMR time series")
+
+      # Prediction probabilities of the hidden process (segmentation)
+      colors <- rainbow(modelHMMR$K)
+      plot.default(statHMMR$predict_prob[, 1], col = colors[1], type = "l", lwd = 1.5, main = "Prediction probabilities", ylab = "Prob")
+      for (k in 2:modelHMMR$K) {
+        lines(statHMMR$predict_prob[, k], col = colors[k])
+      }
+
+      # Filtered time series and filtering regime probabilities
+      par(mfrow = c(2, 1))
+      plot.default(modelHMMR$Y, type = "l", ylab = "y", xlab = "", ylim = yaxislim)#black
+      title(main = "Original and filtered HMMR time series")
+      lines(statHMMR$filtered, col = "red", lwd = 2)
+
+      # Filtering probabilities of the hidden process (segmentation)
+      plot.default(statHMMR$filter_prob[, 1], col = colors[1], type = "l", lwd = 1.5, main = "Filtering probabilities", xlab = "t", ylab = "Prob")
+      for (k in 2:modelHMMR$K) {
+        lines(statHMMR$filter_prob[, k], col = colors[k], type = "l", lwd = 1.5) #Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_t)
+      }
+
+      # Data, regressors, and segmentation
+      par(mfrow = c(2, 1))
+      plot.default(modelHMMR$Y, type = "l", ylab = "y", xlab = "", ylim = yaxislim)
+      title(main = "Time series, HMMR regimes, and smoothing probabilites")
+      for (k in 1:modelHMMR$K) {
+        model_k <- statHMMR$regressors[, k]
+        #prob_model_k = HMMR$param$piik[,k]
+
+        index <- statHMMR$klas == k
+        active_model_k <- model_k[index]#prob_model_k >= prob);
+        active_period_model_k <- seq(1:modelHMMR$m)[index]#prob_model_k >= prob);
+
+        if (length(active_model_k) != 0) {
+          lines(model_k, col = colors[k], lty = "dotted", lwd = 1)
+          lines(active_period_model_k, active_model_k, col = colors[k], type = "l", lwd = 3)
+        }
+      }
+
+      # Probablities of the hidden process (segmentation)
+      plot.default(statHMMR$tau_tk[, 1], main = "Smoothing probabilities", xlab = "", ylab = "Prob", col = colors[1], type = "l", lwd = 1.5)
+      if (modelHMMR$K > 1) {
+        for (k in 2:modelHMMR$K) {
+          lines(statHMMR$tau_tk[, k], col = colors[k], type = "l", lwd = 1.5)
+        }
+      }
+      #Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_n)
+
+      ## data, regression model, and segmentation
+      par(mfrow = c(2, 1))
+      plot.default(modelHMMR$Y, type = "l", ylab = "y", xlab = "", ylim = yaxislim)
+      title(main = "Original and smoothed HMMR time series, and segmentation")
+      lines(statHMMR$smoothed, col = "red", lwd = 2)
+
+      # Transition time points
+      tk <- which(diff(statHMMR$klas) != 0)
+      for (i in 1:length(tk)) {
+        abline(v = tk[i], lty = "dotted", lwd = 2, col = "red")
+      }
+
+      # Probablities of the hidden process (segmentation)
+      plot.default(statHMMR$klas, type = "l", lwd = 2, col = "red", xlab = "", ylab = "Estimated class labels")
+    }
   )
-  # methods = list(
-  #   plot = function() {
-  #     par(mfrow = c(2, 1))
-  #     plot.default(modelRHLP$Y, type = "l", ylab = "y", xlab = "")
-  #     title(main = "Time series, RHLP regimes and process probabilities")
-  #     colors = rainbow(modelRHLP$K)
-  #     for (k in 1:modelRHLP$K) {
-  #       index <- (statRHLP$klas == k)
-  #       polynomials <- statRHLP$polynomials[(statRHLP$klas == k), k]
-  #       lines(statRHLP$polynomials[, k], lty = "dotted", lwd = 2, col = colors[k])
-  #       lines(seq(1:modelRHLP$m)[index], polynomials, lwd = 2, col = colors[k])
-  #     }
-  #
-  #     plot.default(statRHLP$piik[, 1], type = "l", lwd = 2, col = colors[1], xlab = "x", ylab = expression('Probability ' ~ pi [k] (t, w)))
-  #     if (K > 1) {
-  #       for (k in 2:modelRHLP$K) {
-  #         lines(statRHLP$piik[, k], type = "l", lwd = 2, col = colors[k])
-  #       }
-  #     }
-  #
-  #     par(mfrow = c(2, 1))
-  #     plot.default(modelRHLP$Y, type = "l", ylab = "y", xlab = "")
-  #     title(main = "Time series, estimated RHLP model, and segmentation")
-  #
-  #     tk = which(diff(statRHLP$klas) != 0)
-  #     for (i in 1:length(tk)) {
-  #       abline(v = tk[i], lty = "dotted", lwd = 2, col = "red")
-  #     }
-  #     plot.default(statRHLP$klas, type = "l", lwd = 2, col = "red", xlab = "", ylab = "Estimated class labels")
-  #   }
-  # )
 )
 
 FittedHMMR <- function(modelHMMR, paramHMMR, statHMMR) {

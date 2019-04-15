@@ -93,3 +93,5 @@ verbose <- TRUE
 type_algo = 'EM'
 
 solution <- EM(modelHMMR, nbr_EM_tries, max_iter_EM, threshold, verbose)
+
+solution$plot()

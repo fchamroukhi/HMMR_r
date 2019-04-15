@@ -70,7 +70,7 @@ StatHMMR <- setRefClass(
       # hmmr.stats.ICL = comp_loglik - (nu*log(m)/2);
 
       ## predicted, filtered, and smoothed time series
-      regressors <- round(phi %*% paramHMMR$beta, 4)
+      regressors <<- round(phi %*% paramHMMR$beta, 4)
 
       # prediction probs   = Pr(z_t|y_1,...,y_{t-1})
       predict_prob[1, ] <<- paramHMMR$prior # t=1 p (z_1)
@@ -83,11 +83,11 @@ StatHMMR <- setRefClass(
       filter_prob <<- round(alpha_tk / (apply(alpha_tk, 1, sum) %*% matrix(1, 1, modelHMMR$K)), 5) #normalize(alpha_tk,2);
 
       # filetered observations
-      filtered <- apply(round(filter_prob * regressors, 5), 1, sum) #pond par les probas de filtrage
+      filtered <<- as.matrix(apply(round(filter_prob * regressors, 5), 1, sum)) #pond par les probas de filtrage
 
       ### smoothed observations
       smoothed_regressors <<- tau_tk * regressors
-      smoothed <- apply(smoothed_regressors, 1, sum)
+      smoothed <<- as.matrix(apply(smoothed_regressors, 1, sum))
 
     },
     #######
