@@ -42,14 +42,14 @@ ParamHMMR <- setRefClass(
       # Initialization taking into account the constraint:
 
       # Initialization of the transition matrix
-      mask <- 0.5 * diag(modelHMMR$K) # mask of order 1
+      maskM <- 0.5 * diag(modelHMMR$K) # mask of order 1
 
       for (k in 1:(modelHMMR$K - 1)) {
-        ind <- which(mask[k, ] != 0)
-        mask[k, ind + 1] <- 0.5
+        ind <- which(maskM[k, ] != 0)
+        maskM[k, ind + 1] <- 0.5
       }
-      trans_mat <<- mask
-      mask <<- mask
+      trans_mat <<- maskM
+      mask <<- maskM
 
       # Initialization of the initial distribution
       prior <<- matrix(c(1, rep(0, modelHMMR$K - 1)))

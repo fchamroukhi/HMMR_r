@@ -101,7 +101,7 @@ StatHMMR <- setRefClass(
         muk[, k] <- mk
         # the regressors means
         if (modelHMMR$variance_type == variance_types$homoskedastic) {
-          sk <- paramHMMR$sigma
+          sk <- paramHMMR$sigma[1]
         }
         else{
           sk <- paramHMMR$sigma[k]

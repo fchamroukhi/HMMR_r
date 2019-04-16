@@ -84,9 +84,9 @@ K <- 5 # number of regimes (states)
 p <- 3 # dimension of beta (order of the polynomial regressors)
 variance_type <- variance_types$hetereskedastic
 
-modelHMMR <- ModelHMMR(fData, K, p)
+modelHMMR <- ModelHMMR(fData, K, p, variance_type)
 
-n_tries <- 5
+n_tries <- 1
 max_iter <- 1500
 threshold <- 1e-6
 verbose <- TRUE
