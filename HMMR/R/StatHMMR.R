@@ -68,23 +68,23 @@ StatHMMR <- setRefClass(
       # hmmr.stats.comp_loglik = comp_loglik;
       # hmmr.stats.ICL = comp_loglik - (nu*log(m)/2);
 
-      ## predicted, filtered, and smoothed time series
-      regressors <<- round(phi %*% paramHMMR$beta, 4)
+      ## Predicted, filtered, and smoothed time series
+      regressors <<- phi %*% paramHMMR$beta
 
-      # prediction probs   = Pr(z_t|y_1,...,y_{t-1})
+      # Prediction probabilities = Pr(z_t|y_1,...,y_{t-1})
       predict_prob[1, ] <<- paramHMMR$prior # t=1 p (z_1)
-      predict_prob[2:modelHMMR$m, ] <<- round((alpha_tk[(1:(modelHMMR$m - 1)), ] %*% paramHMMR$trans_mat) / (apply(alpha_tk[(1:(modelHMMR$m - 1)), ], 1, sum) %*% matrix(1, 1, modelHMMR$K)), 5) #t =2,...,n
+      predict_prob[2:modelHMMR$m, ] <<- (alpha_tk[(1:(modelHMMR$m - 1)), ] %*% paramHMMR$trans_mat) / (apply(alpha_tk[(1:(modelHMMR$m - 1)), ], 1, sum) %*% matrix(1, 1, modelHMMR$K)) # t = 2,...,n
 
-      # predicted observations
-      predicted <<- matrix(apply(round(predict_prob * regressors, 5), 1, sum)) #pond par les probas de prediction
+      # Predicted observations
+      predicted <<- matrix(apply(predict_prob * regressors, 1, sum)) # Weighted by prediction probabilities
 
-      # filtering probs  = Pr(z_t|y_1,...,y_t)
-      filter_prob <<- round(alpha_tk / (apply(alpha_tk, 1, sum) %*% matrix(1, 1, modelHMMR$K)), 5) #normalize(alpha_tk,2);
+      # Filtering probabilities = Pr(z_t|y_1,...,y_t)
+      filter_prob <<- alpha_tk / (apply(alpha_tk, 1, sum) %*% matrix(1, 1, modelHMMR$K)) # Normalize(alpha_tk,2);
 
-      # filetered observations
-      filtered <<- as.matrix(apply(round(filter_prob * regressors, 5), 1, sum)) #pond par les probas de filtrage
+      # Filetered observations
+      filtered <<- as.matrix(apply(filter_prob * regressors, 1, sum)) # Weighted by filtering probabilities
 
-      ### smoothed observations
+      # Smoothed observations
       smoothed_regressors <<- tau_tk * regressors
       smoothed <<- as.matrix(apply(smoothed_regressors, 1, sum))
 
@@ -107,7 +107,7 @@ StatHMMR <- setRefClass(
           sk <- paramHMMR$sigma[k]
         }
         z <- ((modelHMMR$Y - mk) ^ 2) / sk
-        log_f_tk[, k] <<- -0.5 * matrix(1, modelHMMR$m, 1) %*% (log(2 * pi) + log(sk)) - 0.5 * z#log(gaussienne)
+        log_f_tk[, k] <<- -0.5 * matrix(1, modelHMMR$m, 1) %*% (log(2 * pi) + log(sk)) - 0.5 * z # log(gaussienne)
 
       }
 

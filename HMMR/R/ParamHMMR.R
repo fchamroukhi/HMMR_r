@@ -33,38 +33,39 @@ ParamHMMR <- setRefClass(
       #                 betak: regression coefficients
       #                 sigma2k (or sigma2) : the variance(s). sigma2k(k) = variance of y(t) given z(t)=k; sigma2k(k) =
       #         sigma^2_k.
-      #         and some stats: like the Mask for a segmental model
+      #         and some stats: like the mask for a segmental model
       #
       #
       # Faicel Chamroukhi, first version in November 2008
       ##################################################################################
 
-      ## Initialisation en tenant compte de la contrainte:
+      # Initialization taking into account the constraint:
 
-      # Initialisation de la matrice des transitions
-      Mask <- 0.5 * diag(modelHMMR$K) # masque d'ordre 1
+      # Initialization of the transition matrix
+      mask <- 0.5 * diag(modelHMMR$K) # mask of order 1
 
       for (k in 1:(modelHMMR$K - 1)) {
-        ind <- which(Mask[k, ] != 0)
-        Mask[k, ind + 1] <- 0.5
+        ind <- which(mask[k, ] != 0)
+        mask[k, ind + 1] <- 0.5
       }
-      trans_mat <<- Mask
-      mask <<- Mask
+      trans_mat <<- mask
+      mask <<- mask
 
-      # Initialisation de la loi initiale de la variable cachee
+      # Initialization of the initial distribution
       prior <<- matrix(c(1, rep(0, modelHMMR$K - 1)))
 
-      #  Initialisation des coeffecients de regression et des variances.
+      # Initialization of regression coefficients and variances
       init_hmmr_regressors(phi, modelHMMR, try_algo)
 
     },
 
     init_hmmr_regressors = function (phi, modelHMMR, try_algo = 1) {
-      if (try_algo == 1) {
-        # uniform segmentation into K contiguous segments, and then a regression
+
+      if (try_algo == 1) { # Uniform segmentation into K contiguous segments, and then a regression
+
         zi <- round(modelHMMR$m / modelHMMR$K) - 1
 
-        s <- 0
+        s <- 0 # If homoskedastic
         for (k in 1:modelHMMR$K) {
           yk <- modelHMMR$Y[((k - 1) * zi + 1):(k * zi)]
           Xk <- as.matrix(phi[((k - 1) * zi + 1):(k * zi), ])
@@ -82,9 +83,9 @@ ParamHMMR <- setRefClass(
           }
         }
       }
-      else{
-        # random segmentation into contiguous segments, and then a regression
-        Lmin <- modelHMMR$p + 1 + 1#minimum length of a segment #10
+      else{ # Random segmentation into contiguous segments, and then a regression
+
+        Lmin <- modelHMMR$p + 1 + 1 # Minimum length of a segment
         tk_init <- rep(0, modelHMMR$K)
         tk_init <- t(tk_init)
         tk_init[1] <- 0
@@ -97,7 +98,7 @@ ParamHMMR <- setRefClass(
         }
         tk_init[K + 1] <- modelHMMR$m
 
-        s <- 0#
+        s <- 0
         for (k in 1:modelHMMR$K) {
           i <- tk_init[k] + 1
           j <- tk_init[k + 1]
@@ -120,37 +121,31 @@ ParamHMMR <- setRefClass(
     },
 
     MStep = function(modelHMMR, statHMMR, phi) {
-      #  updates of the Markov chain parameters
-      # initial states prob: P(Z_1 = k)
+      # Updates of the Markov chain parameters
+      # Initial states prob: P(Z_1 = k)
       prior <<- matrix(normalize(statHMMR$tau_tk[1, ])$M)
-      # transition matrix: P(Zt=i|Zt-1=j) (A_{k\ell})
-      #print(cbind(apply(xi_tkl[,,1],2,sum),apply(xi_tkl[,,2],2,sum),apply(xi_tkl[,,3],2,sum)))
-      # print(xi_tkl[,,1])
-      trans <- NULL
-      for (k in 1:modelHMMR$K) {
-        trans <- cbind(trans, apply(statHMMR$xi_tkl[, , k], 2, sum))
-      }
 
-      trans_mat <<- round(mk_stochastic(trans), 4)
+      # Transition matrix: P(Zt=i|Zt-1=j) (A_{k\ell})
+      trans_mat <<- mk_stochastic(apply(statHMMR$xi_tkl, c(2, 3), sum))
 
-      # for segmental HMMR: p(z_t = k| z_{t-1} = \ell) = zero if k<\ell (no back) of if k >= \ell+2 (no jumps)
+      # For segmental HMMR: p(z_t = k| z_{t-1} = \ell) = zero if k<\ell (no back) of if k >= \ell+2 (no jumps)
       trans_mat <<- mk_stochastic(mask * trans_mat)
-      ##  update of the regressors (reg coefficients betak and the variance(s) sigma2k)
+      # Update of the regressors (reg coefficients betak and the variance(s) sigma2k)
 
-      s = 0 # if homoskedastic
+      s <- 0 # If homoskedastic
       for (k in 1:modelHMMR$K) {
         weights <- statHMMR$tau_tk[, k]
 
-        nk <- sum(weights)# expected cardinal nbr of state k
-        Xk <- phi * (sqrt(weights) %*% matrix(1, 1, modelHMMR$p + 1))#[n*(p+1)]
-        yk <- modelHMMR$Y * (sqrt(weights))# dimension :[(nx1).*(nx1)] = [nx1]
+        nk <- sum(weights) # Expected cardinal number of state k
+        Xk <- phi * (sqrt(weights) %*% matrix(1, 1, modelHMMR$p + 1)) # [n*(p+1)]
+        yk <- modelHMMR$Y * sqrt(weights) # dimension: [(nx1).*(nx1)] = [nx1]
 
-        # reg coefficients
-        lambda <- 1e-9 # if a bayesian prior on the beta's
+        # Regression coefficients
+        lambda <- 1e-9 # If a bayesian prior on the beta's
         bk <- (solve(t(Xk) %*% Xk + lambda * diag(modelHMMR$p + 1)) %*% t(Xk)) %*% yk
         beta[, k] <<- bk
 
-        # variance(s)
+        # Variance(s)
         z <- sqrt(weights) * (modelHMMR$Y - phi %*% bk)
         sk <- t(z) %*% z
         if (modelHMMR$variance_type == variance_types$homoskedastic) {

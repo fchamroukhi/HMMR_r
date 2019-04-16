@@ -33,7 +33,8 @@ EM <- function(modelHMMR, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbos
 
     stat <- StatHMMR(modelHMMR)
 
-    while (!converged && (iter <= max_iter)) {
+    while ((iter <= max_iter) && !converged) {
+
       ## E step : calculate tge tau_tk (p(Zt=k|y1...ym;theta)) and xi t_kl (and the log-likelihood) by
       #  forwards backwards (computes the alpha_tk et beta_tk)
       stat$EStep(modelHMMR, param, phi)
@@ -60,11 +61,10 @@ EM <- function(modelHMMR, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbos
         }
       }
 
-      # TEST OF CONVERGENCE
       converged <- (abs(stat$loglik - prev_loglik) / abs(prev_loglik) < threshold)
       if (is.na(converged)) {
         converged <- FALSE
-      } # basically for the first iteration when prev_loglik is Inf
+      } # Basically for the first iteration when prev_loglik is Inf
 
       prev_loglik <- stat$loglik
       stat$stored_loglik[iter] <- stat$loglik
@@ -84,6 +84,7 @@ EM <- function(modelHMMR, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbos
       total_nb_try <- 0
 
       if (stat$loglik > best_loglik) {
+
         statSolution <- stat$copy()
         paramSolution <- param$copy()
 
@@ -92,17 +93,17 @@ EM <- function(modelHMMR, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbos
     }
 
     if (total_nb_try > 500) {
-      stop(paste('can', "'", 't obtain the requested number of classes'))
+      stop(paste("can't obtain the requested number of classes"))
     }
 
   }
 
-    # Computation of c_ig the hard partition of the curves and klas
-  statSolution$MAP()
-
   if (n_tries > 1) {
-    print(paste('best_loglik:  ', stats$loglik))
+    print(paste('best_loglik:  ', statSolution$loglik))
   }
+
+  # Smoothing state sequences : argmax(smoothing probs), and corresponding binary allocations partition
+  statSolution$MAP()
 
   # FINISH computation of statSolution
   statSolution$computeStats(modelHMMR, paramSolution, phi, cputime_total)

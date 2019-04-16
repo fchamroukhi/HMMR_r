@@ -81,17 +81,17 @@ fData$setData(X, Y)
 
 
 K <- 5 # number of regimes (states)
-p <- 2 # dimension of beta (order of the polynomial regressors)
+p <- 3 # dimension of beta (order of the polynomial regressors)
 variance_type <- variance_types$hetereskedastic
 
 modelHMMR <- ModelHMMR(fData, K, p)
 
-nbr_EM_tries <- 1
-max_iter_EM <- 1500
+n_tries <- 5
+max_iter <- 1500
 threshold <- 1e-6
 verbose <- TRUE
 type_algo = 'EM'
 
-solution <- EM(modelHMMR, nbr_EM_tries, max_iter_EM, threshold, verbose)
+solution <- EM(modelHMMR, n_tries, max_iter, threshold, verbose)
 
 solution$plot()

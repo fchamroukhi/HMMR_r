@@ -66,11 +66,11 @@ forwards_backwards <- function(prior, transmat, f_tk) {
 
 
   for (t in (N - 1):1) {
-    beta_tk[t, ] <-  round(normalize(transmat %*% (beta_tk[t + 1, ] * f_tk[t + 1, ]))$M, 4)
+
+    beta_tk[t, ] <-  normalize(transmat %*% (beta_tk[t + 1, ] * f_tk[t + 1, ]))$M
     # transmat * t(beta[t+1,] %*% fik[t+1,]) /scale[t]
-    tau_tk[t, ] <- round(normalize(alpha_tk[t, ] * beta_tk[t, ])$M, 4)
-    xi_tkl[t, , ] <- round(normalize(transmat * (
-      as.matrix(alpha_tk[t, ]) %*% t(as.matrix(beta_tk[t + 1, ] * f_tk[t + 1, ]))))$M, 4)
+    tau_tk[t, ] <- normalize(alpha_tk[t, ] * beta_tk[t, ])$M
+    xi_tkl[t, , ] <- normalize(transmat * (alpha_tk[t, ] %*% t(beta_tk[t + 1, ] * f_tk[t + 1, ])))$M
   }
 
   return(list(tau_tk = tau_tk, xi_tkl = xi_tkl, alpha_tk = alpha_tk, beta_tk = beta_tk, loglik = loglik))
