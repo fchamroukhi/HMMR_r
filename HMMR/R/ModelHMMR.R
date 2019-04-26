@@ -6,10 +6,8 @@ ModelHMMR <- setRefClass(
   contains = "FData",
   # Define the fields
   fields = list(
-    K = "numeric",
-    # number of regimes
-    p = "numeric",
-    # dimension of beta (order of polynomial regression)
+    K = "numeric", # number of regimes
+    p = "numeric", # dimension of beta (order of polynomial regression)
     variance_type = "numeric",
     nu = "numeric" # degree of freedom
   )
