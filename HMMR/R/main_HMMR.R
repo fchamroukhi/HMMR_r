@@ -75,7 +75,14 @@ source("R/ModelHMMR.R")
 source("R/ModelLearner.R")
 
 # Building matrices for regression
+
+# Toy time series with regime changes
 load("data/simulatedTimeSeries.RData")
+
+# Some real time series with regime changes
+# load("data/realTimeSeries1.RData")
+# load("data/realTimeSeries2.RData")
+
 fData <- FData$new()
 fData$setData(X, Y)
 
@@ -90,7 +97,6 @@ n_tries <- 1
 max_iter <- 1500
 threshold <- 1e-6
 verbose <- TRUE
-type_algo = 'EM'
 
 solution <- EM(modelHMMR, n_tries, max_iter, threshold, verbose)
 
