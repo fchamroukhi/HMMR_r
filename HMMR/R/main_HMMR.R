@@ -68,7 +68,7 @@
 # Faicel Chamroukhi Septembre 2008.
 ##############################################################################################
 
-rm(list=ls())
+rm(list = ls())
 source("R/enums.R")
 source("R/FData.R")
 source("R/ModelHMMR.R")
