@@ -8,6 +8,9 @@ FittedHMMR <- setRefClass(
   methods = list(
     plot = function() {
 
+      oldpar <- par()[c("mfrow", "mai", "mgp")]
+      on.exit(par(oldpar), add = TRUE)
+
       yaxislim <- c(mean(modelHMMR$Y) - 2 * sd(modelHMMR$Y), mean(modelHMMR$Y) + 2 * sd(modelHMMR$Y))
 
       # Predicted time series and predicted regime probabilities
