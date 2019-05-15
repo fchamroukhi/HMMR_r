@@ -1,8 +1,6 @@
 .DS_Store
-.Rapp.history
-.Rhistory
-HMMR/.DS_Store
-HMMR/.Rbuildignore
-HMMR/.Rhistory
-HMMR/.Rproj.user/
 .Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/doc

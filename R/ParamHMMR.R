@@ -1,6 +1,3 @@
-source("R/enums.R")
-source("R/mk_stochastic.R")
-
 ParamHMMR <- setRefClass(
   "ParamHMMR",
   fields = list(

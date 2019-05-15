@@ -1,9 +1,3 @@
-source("R/enums.R")
-source("R/utils.R")
-source("R/ParamHMMR.R")
-source("R/StatHMMR.R")
-source("R/FittedHMMR.R")
-
 EM <- function(modelHMMR, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
 
   phi <- designmatrix(x = modelHMMR$X, p = modelHMMR$p)$XBeta
