@@ -1,20 +1,12 @@
-HMMR
-
-User-freindly and flexible model anf algorithm for time series segmentation with a Regression
-model with a Hidden Markov Model Regression (HMMR).
+User-friendly and flexible algorithm for time series segmentation with a Regression model with a Hidden Markov Model Regression (HMMR).
 
 
-Hidden Markov Model Regression (HMMR) for segmentation of time series
-with regime changes. The model assumes that the time series is
-governed by a sequence of hidden discrete regimes/states, where each
-regime/state has Gaussian regressors as observations.
+Hidden Markov Model Regression (HMMR) for segmentation of time series with regime changes. The model assumes that the time series is governed by a sequence of hidden discrete regimes/states, where each regime/state has Gaussian regressors as observations. 
 The model parameters are estimated by MLE via the EM algorithm
-
-Faicel Chamroukhi
 
 *Please cite the following papers for this code:*
 
-
+```
 @article{Chamroukhi-FDA-2018,
 	Journal = {Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery},
 	Author = {Faicel Chamroukhi and Hien D. Nguyen},
@@ -63,9 +55,4 @@ Faicel Chamroukhi
 	Year = {2009},
 	url  = {https://chamroukhi.users.lmno.cnrs.fr/papers/Chamroukhi_Neural_Networks_2009.pdf}
 	}
-
-
-
-
-Faicel Chamroukhi Septembre 2008.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+```
