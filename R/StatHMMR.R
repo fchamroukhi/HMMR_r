@@ -42,7 +42,7 @@ StatHMMR <- setRefClass(
     # # compute loglikelihood
     # #######
     computeLikelihood = function(paramHMMR) {
-      fb <- forwards_backwards(paramHMMR$prior, paramHMMR$trans_mat, t(f_tk))
+      fb <- forwardsBackwards(paramHMMR$prior, paramHMMR$trans_mat, t(f_tk))
       loglik <<- fb$loglik
 
     },
@@ -113,7 +113,7 @@ StatHMMR <- setRefClass(
 
       f_tk <<- exp(log_f_tk)
 
-      fb <- forwards_backwards(paramHMMR$prior, paramHMMR$trans_mat, t(f_tk))
+      fb <- forwardsBackwards(paramHMMR$prior, paramHMMR$trans_mat, t(f_tk))
       tau_tk <<- t(fb$tau_tk)
       xi_tkl <<- fb$xi_tkl
       alpha_tk <<- t(fb$alpha_tk)
