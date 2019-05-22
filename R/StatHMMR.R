@@ -53,7 +53,7 @@ StatHMMR <- setRefClass(
       cputime <<- mean(cputime_total)
 
       # ## sate sequence prob p(z_1,...,z_n;\pi,A)
-      state_probs <<- hmm_process(paramHMMR$prior, paramHMMR$trans_mat, modelHMMR$m)
+      state_probs <<- hmmProcess(paramHMMR$prior, paramHMMR$trans_mat, modelHMMR$m)
 
       ### BIC, AIC, ICL
       BIC <<- loglik - modelHMMR$nu * log(modelHMMR$m) / 2

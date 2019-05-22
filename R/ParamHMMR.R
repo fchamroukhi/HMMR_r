@@ -123,10 +123,10 @@ ParamHMMR <- setRefClass(
       prior <<- matrix(normalize(statHMMR$tau_tk[1, ])$M)
 
       # Transition matrix: P(Zt=i|Zt-1=j) (A_{k\ell})
-      trans_mat <<- mk_stochastic(apply(statHMMR$xi_tkl, c(1, 2), sum))
+      trans_mat <<- mkStochastic(apply(statHMMR$xi_tkl, c(1, 2), sum))
 
       # For segmental HMMR: p(z_t = k| z_{t-1} = \ell) = zero if k<\ell (no back) of if k >= \ell+2 (no jumps)
-      trans_mat <<- mk_stochastic(mask * trans_mat)
+      trans_mat <<- mkStochastic(mask * trans_mat)
       # Update of the regressors (reg coefficients betak and the variance(s) sigma2k)
 
       s <- 0 # If homoskedastic
