@@ -38,8 +38,7 @@ See `help(package="HMMR")` for further details and references provided by `citat
 
 ```{r}
 data("simulatedtimeserie")
-fData <- FData$new()
-fData$setData(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]))
+fData <- FData(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]))
 ```
 
 # Set up HMMR model parameters

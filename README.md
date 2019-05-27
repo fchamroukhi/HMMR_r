@@ -48,8 +48,7 @@ browseVignettes("HMMR")
 library(HMMR)
 
 data("simulatedtimeserie")
-fData <- FData$new()
-fData$setData(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]))
+fData <- FData(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]))
 
 K <- 5 # number of regimes (states)
 p <- 3 # dimension of beta (order of the polynomial regressors)
