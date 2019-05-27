@@ -47,7 +47,7 @@ fData$setData(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimes
 ```{r}
 K <- 5 # number of regimes (states)
 p <- 3 # dimension of beta (order of the polynomial regressors)
-variance_type <- variance_types$hetereskedastic
+variance_type <- variance_types$heteroskedastic
 modelHMMR <- ModelHMMR(fData, K, p, variance_type)
 ```
 
