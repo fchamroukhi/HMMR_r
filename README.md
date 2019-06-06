@@ -48,19 +48,17 @@ browseVignettes("HMMR")
 library(HMMR)
 
 data("simulatedtimeserie")
-fData <- FData(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]))
 
 K <- 5 # number of regimes (states)
 p <- 3 # dimension of beta (order of the polynomial regressors)
 variance_type <- variance_types$heteroskedastic
-modelHMMR <- ModelHMMR(fData, K, p, variance_type)
 
 n_tries <- 1
 max_iter <- 1500
 threshold <- 1e-6
 verbose <- TRUE
 
-solution <- EM(modelHMMR, n_tries, max_iter, threshold, verbose)
+solution <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]), K, p, variance_type, n_tries, max_iter, threshold, verbose)
 #> [1] "HMM_regression | EM   : Iteration : 1  Log-likelihood :  -1556.39696825601"
 #> [1] "HMM_regression | EM   : Iteration : 2  Log-likelihood :  -1022.47935723687"
 #> [1] "HMM_regression | EM   : Iteration : 3  Log-likelihood :  -1019.51830707432"

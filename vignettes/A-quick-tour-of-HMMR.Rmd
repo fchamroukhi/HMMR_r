@@ -38,7 +38,6 @@ See `help(package="HMMR")` for further details and references provided by `citat
 
 ```{r}
 data("simulatedtimeserie")
-fData <- FData(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]))
 ```
 
 # Set up HMMR model parameters
@@ -47,7 +46,6 @@ fData <- FData(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtime
 K <- 5 # number of regimes (states)
 p <- 3 # dimension of beta (order of the polynomial regressors)
 variance_type <- variance_types$heteroskedastic
-modelHMMR <- ModelHMMR(fData, K, p, variance_type)
 ```
 
 # Set up EM parameters
@@ -62,7 +60,7 @@ verbose <- TRUE
 # Estimation
 
 ```{r}
-solution <- EM(modelHMMR, n_tries, max_iter, threshold, verbose)
+solution <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]), K, p, variance_type, n_tries, max_iter, threshold, verbose)
 ```
 
 

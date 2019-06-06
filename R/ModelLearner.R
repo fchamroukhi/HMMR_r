@@ -1,6 +1,7 @@
-EM <- function(modelHMMR, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
+#' @export
+emHMMR <- function(X, Y, K, p, variance_type = 2, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
 
-  phi <- designmatrix(x = modelHMMR$X, p = modelHMMR$p)$XBeta
+  fData <- FData$new(X, Y)
 
   nb_good_try <- 0
   total_nb_try <- 0
@@ -17,24 +18,24 @@ EM <- function(modelHMMR, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbos
 
     ## EM Initializaiton step
     ## Initialization of the Markov chain params, the regression coeffs, and the variance(s)
-    param <- ParamHMMR(modelHMMR)
-    param$init_hmmr(modelHMMR, phi, nb_good_try + 1)
+    param <- ParamHMMR$new(fData = fData, K = K, p = p, variance_type = variance_type)
+    param$initHmmr(nb_good_try + 1)
 
     iter <- 0
     prev_loglik <- -Inf
     converged <- FALSE
     top <- 0
 
-    stat <- StatHMMR(modelHMMR)
+    stat <- StatHMMR(paramHMMR = param)
 
     while ((iter <= max_iter) && !converged) {
 
       ## E step : calculate tge tau_tk (p(Zt=k|y1...ym;theta)) and xi t_kl (and the log-likelihood) by
       #  forwards backwards (computes the alpha_tk et beta_tk)
-      stat$EStep(modelHMMR, param, phi)
+      stat$EStep(param)
 
       ## M step
-      param$MStep(modelHMMR, stat, phi)
+      param$MStep(stat)
 
       ## End of an EM iteration
 
@@ -100,7 +101,7 @@ EM <- function(modelHMMR, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbos
   statSolution$MAP()
 
   # FINISH computation of statSolution
-  statSolution$computeStats(modelHMMR, paramSolution, phi, cputime_total)
+  statSolution$computeStats(paramSolution, cputime_total)
 
-  return(FittedHMMR(modelHMMR, paramSolution, statSolution))
+  return(ModelHMMR(paramHMMR = paramSolution, statHMMR = statSolution))
 }
