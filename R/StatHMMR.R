@@ -117,10 +117,10 @@ StatHMMR <- setRefClass(
         muk[, k] <- mk
         # The regressors means
         if (paramHMMR$variance_type == variance_types$homoskedastic) {
-          sk <- paramHMMR$sigma[1]
+          sk <- paramHMMR$sigma2[1]
         }
         else{
-          sk <- paramHMMR$sigma[k]
+          sk <- paramHMMR$sigma2[k]
         }
         z <- ((paramHMMR$fData$Y - mk) ^ 2) / sk
         log_f_tk[, k] <<- -0.5 * matrix(1, paramHMMR$fData$m, 1) %*% (log(2 * pi) + log(sk)) - 0.5 * z # log(gaussienne)

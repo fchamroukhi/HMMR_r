@@ -13,7 +13,7 @@ ParamHMMR <- setRefClass(
     prior = "matrix",
     trans_mat = "matrix",
     beta = "matrix",
-    sigma = "matrix",
+    sigma2 = "matrix",
     mask = "matrix"
   ),
   methods = list(
@@ -39,10 +39,10 @@ ParamHMMR <- setRefClass(
       trans_mat <<- matrix(NA, K, K)
       beta <<- matrix(NA, p + 1, K)
       if (variance_type == variance_types$homoskedastic) {
-        sigma <<- matrix(NA)
+        sigma2 <<- matrix(NA)
       }
       else{
-        sigma <<- matrix(NA, K)
+        sigma2 <<- matrix(NA, K)
       }
       mask <<- matrix(NA, K, K)
 
@@ -112,10 +112,10 @@ ParamHMMR <- setRefClass(
           sk <- t(yk - muk) %*% (yk - muk)
           if (variance_type == variance_types$homoskedastic) {
             s <- (s + sk)
-            sigma <<- s / fData$m
+            sigma2 <<- s / fData$m
           }
           else {
-            sigma[k] <<- sk / length(yk)
+            sigma2[k] <<- sk / length(yk)
           }
         }
       }
@@ -146,11 +146,11 @@ ParamHMMR <- setRefClass(
 
           if (variance_type == variance_types$homoskedastic) {
             s <- s + sk
-            sigma <<- s / fData$m
+            sigma2 <<- s / fData$m
 
           }
           else{
-            sigma[k] <<- sk / length(yk)
+            sigma2[k] <<- sk / length(yk)
           }
         }
       }
@@ -186,10 +186,10 @@ ParamHMMR <- setRefClass(
         sk <- t(z) %*% z
         if (variance_type == variance_types$homoskedastic) {
           s <- (s + sk)
-          sigma <<- s / fData$m
+          sigma2 <<- s / fData$m
         }
         else{
-          sigma[k] <<- sk / nk
+          sigma2[k] <<- sk / nk
         }
       }
 
