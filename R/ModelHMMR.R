@@ -81,6 +81,56 @@ ModelHMMR <- setRefClass(
       # Probablities of the hidden process (segmentation)
       plot.default(paramHMMR$fData$X, statHMMR$klas, type = "l", xlab = "x", ylab = "Estimated class labels", col = "red", lwd = 1.5)
       axis(side = 2, at = 1:paramHMMR$K)
+    },
+
+    summary = function() {
+
+      digits = getOption("digits")
+
+      title <- paste("Fitted HMMR model")
+      txt <- paste(rep("-", min(nchar(title) + 4, getOption("width"))), collapse = "")
+
+      # Title
+      cat(txt)
+      cat("\n")
+      cat(title)
+      cat("\n")
+      cat(txt)
+
+      cat("\n")
+      cat("\n")
+      cat(paste0("HMMR model with ", paramHMMR$K, ifelse(paramHMMR$K > 1, " components", " component"), ":"))
+      cat("\n")
+      cat("\n")
+
+      tab <- data.frame("log-likelihood" = statHMMR$loglik, "nu" = paramHMMR$nu, "AIC" = statHMMR$AIC,
+                        "BIC" = statHMMR$BIC, row.names = "", check.names = FALSE)
+      print(tab, digits = digits)
+
+      cat("\nClustering table:")
+      print(table(statHMMR$klas))
+
+      cat("\nRegressors:\n")
+      if (paramHMMR$p > 0) {
+        row.names = c("1", sapply(1:paramHMMR$p, function(x) paste0("X^", x)))
+      } else {
+        row.names = "1"
+      }
+
+      betas <- data.frame(paramHMMR$beta, row.names = row.names)
+      colnames(betas) <- sapply(1:paramHMMR$K, function(x) paste0("Beta", x))
+      print(betas, digits = digits)
+
+      cat("\nVariances:\n")
+      sigma2 = data.frame(t(paramHMMR$sigma2), row.names = NULL)
+      if (paramHMMR$variance_type == variance_types$homoskedastic) {
+        colnames(sigma2) = "Sigma2"
+        print(sigma2, digits = digits, row.names = FALSE)
+      } else {
+        colnames(sigma2) = sapply(1:paramHMMR$K, function(x) paste0("Sigma2[", x, "]"))
+        print(sigma2, digits = digits, row.names = FALSE)
+      }
+
     }
   )
 )

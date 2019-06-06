@@ -63,6 +63,11 @@ verbose <- TRUE
 solution <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]), K, p, variance_type, n_tries, max_iter, threshold, verbose)
 ```
 
+# Summary
+
+```{r}
+solution$summary()
+```
 
 # Plots
 
