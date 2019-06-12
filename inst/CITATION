@@ -9,9 +9,10 @@ citEntry(
   year = "2019",
   url = "https://chamroukhi.com/papers/MBCC-FDA.pdf",
   doi = "https://doi.org/10.1002/widm.1298",
-  textVersion = "Chamroukhi F, Nguyen H (2019). \u201cModel-Based Clustering and Classification
-  of Functional Data.\u201d _Wiley Interdisciplinary Reviews: Data Mining and Knowledge
-  Discovery_. doi: 10.1002/widm.1298 (URL: https://doi.org/10.1002/widm.1298),
+  textVersion = "Chamroukhi F, Nguyen H (2019). \u201cModel-Based Clustering and
+  Classification of Functional Data.\u201d Wiley Interdisciplinary Reviews: Data
+  Mining and Knowledge Discovery. doi: 10.1002/widm.1298
+  (URL: https://doi.org/10.1002/widm.1298),
   <URL: https://chamroukhi.com/papers/MBCC-FDA.pdf>."
 )
 
@@ -31,8 +32,8 @@ citEntry(
   url = "https://chamroukhi.com/papers/Chamroukhi-ijcnn-2011.pdf",
   textVersion = "Chamroukhi F, Sam\u00e9 A, Aknin P, Govaert G (2011). \u201cModel-based
   clustering with Hidden Markov Model regression for time series with regime changes.\u201d
-  In _Proceedings of the International Joint Conference on Neural Networks (IJCNN),
-  IEEE_, 2814-2821. <URL: https://chamroukhi.com/papers/Chamroukhi-ijcnn-2011.pdf>."
+  In Proceedings of the International Joint Conference on Neural Networks (IJCNN),
+  IEEE, 2814-2821. <URL: https://chamroukhi.com/papers/Chamroukhi-ijcnn-2011.pdf>."
 )
 
 citEntry(
@@ -50,7 +51,7 @@ citEntry(
   url = "https://chamroukhi.com/papers/chamroukhi_ijcnn2009.pdf",
   textVersion = "Chamroukhi F, Sam\u00e9 A, Govaert G, Aknin P (2009). \u201cA regression
   model with a hidden logistic process for feature extraction from time series.\u201d
-  In _International Joint Conference on Neural Networks (IJCNN)_, 489-496.
+  In International Joint Conference on Neural Networks (IJCNN), 489-496.
   <URL: https://chamroukhi.com/papers/chamroukhi_ijcnn2009.pdf>."
 )
 
@@ -69,6 +70,6 @@ citEntry(
   pages = "593--602",
   url = "https://chamroukhi.com/papers/Chamroukhi_Neural_Networks_2009.pdf",
   textVersion = "Chamroukhi F, Sam\u00e9 A, Govaert G, Aknin P (2009). \u201cTime series
-  modeling by a  regression approach based on a latent process.\u201d _Neural Networks_,
-  *22*(5-6), 593-602. <URL:https://chamroukhi.com/papers/Chamroukhi_Neural_Networks_2009.pdf>."
+  modeling by a  regression approach based on a latent process.\u201d Neural Networks,
+  22(5-6), 593-602. <URL:https://chamroukhi.com/papers/Chamroukhi_Neural_Networks_2009.pdf>."
 )
