@@ -1,16 +1,29 @@
-Package: HMMR
 Type: Package
-Title: What the Package Does (Title Case)
+Package: HMMR
+Title: Hidden Markov Model Regression (HMMR) for Time Series Segmentation
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: c(person("Faicel", "Chamroukhi", role = c("aut"),
+    email = "faicel.chamroukhi@unicaen.fr",
+    comment = c(ORCID = "0000-0002-5894-3103")),
+    person("Marius", "Bartcus", role = c("aut")),
+    person("Florian", "Lecocq", role = c("aut", "cre"),
+    email = "florian.lecocq@outlook.com"))
+Description: Flexible and user-friendly probabilistic segmentation of time series with 
+    regime changes by a regression model governed by a hidden Markov process, fitted by the 
+    Baum-Welch (EM) algorithm. See also the packages 'RHLP', 'PWR', and 'MHMMR'.
+License: GPL (>= 3)
 Depends: 
     R (>= 2.10)
-Encoding: UTF-8
-LazyData: true
+Imports: 
+    methods,
+    stats,
+    Rcpp
+Suggests: 
+    knitr,
+    rmarkdown
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo
 Collate:
     HMMR-package.R
     RcppExports.R
@@ -23,16 +36,8 @@ Collate:
     StatHMMR.R
     ModelHMMR.R
     ModelLearner.R
+VignetteBuilder: knitr
+Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
-LinkingTo: 
-    Rcpp,
-    RcppArmadillo
-Imports: 
-    methods,
-    stats,
-    Rcpp
-Suggests: 
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr
