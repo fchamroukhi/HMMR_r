@@ -99,7 +99,7 @@ ModelHMMR <- setRefClass(
 
       cat("\n")
       cat("\n")
-      cat(paste0("HMMR model with ", paramHMMR$K, ifelse(paramHMMR$K > 1, " components", " component"), ":"))
+      cat(paste0("HMMR model with K = ", paramHMMR$K, ifelse(paramHMMR$K > 1, " components", " component"), ":"))
       cat("\n")
       cat("\n")
 
@@ -107,10 +107,10 @@ ModelHMMR <- setRefClass(
                         "BIC" = statHMMR$BIC, row.names = "", check.names = FALSE)
       print(tab, digits = digits)
 
-      cat("\nClustering table:")
+      cat("\nClustering table (Number of observations in each regimes):\n")
       print(table(statHMMR$klas))
 
-      cat("\nRegressors:\n")
+      cat("\nRegression coefficients:\n\n")
       if (paramHMMR$p > 0) {
         row.names = c("1", sapply(1:paramHMMR$p, function(x) paste0("X^", x)))
       } else {
@@ -118,16 +118,17 @@ ModelHMMR <- setRefClass(
       }
 
       betas <- data.frame(paramHMMR$beta, row.names = row.names)
-      colnames(betas) <- sapply(1:paramHMMR$K, function(x) paste0("Beta", x))
+      colnames(betas) <- sapply(1:paramHMMR$K, function(x) paste0("Beta(K = ", x, ")"))
       print(betas, digits = digits)
 
-      cat("\nVariances:\n")
+      cat(paste0(ifelse(paramHMMR$variance_type == variance_types$homoskedastic, "\n\n",
+                        "\nVariances:\n\n")))
       sigma2 = data.frame(t(paramHMMR$sigma2), row.names = NULL)
       if (paramHMMR$variance_type == variance_types$homoskedastic) {
         colnames(sigma2) = "Sigma2"
         print(sigma2, digits = digits, row.names = FALSE)
       } else {
-        colnames(sigma2) = sapply(1:paramHMMR$K, function(x) paste0("Sigma2[", x, "]"))
+        colnames(sigma2) = sapply(1:paramHMMR$K, function(x) paste0("Sigma2(K = ", x, ")"))
         print(sigma2, digits = digits, row.names = FALSE)
       }
 
