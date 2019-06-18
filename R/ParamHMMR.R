@@ -1,3 +1,26 @@
+#' A Reference Class which contains parameters of a HMMR model.
+#'
+#' ParamHMMR contains all the parameters of a HMMR model.
+#'
+#' @field fData [FData][FData] object representing the sample.
+#' @field K The number of regimes (mixture components).
+#' @field p The order of the polynomial regression.
+#' @field variance_type Character indicating if the model is homoskedastic
+#' (`variance_type` = "homoskedastic") or heteroskedastic
+#' (`variance_type` = "heteroskedastic").
+#' @field prior The prior probabilities of the Markov chain.
+#' @field trans_mat The transition matrix of the Markov chain.
+#' @field beta Parameters of the polynomial regressions.
+#' \eqn{\beta = (\beta_{1},\dots,\beta_{K})} is a matrix of dimension
+#' \eqn{(p + 1, K)}, with \emph{p} the order of the polynomial regression.
+#' @field sigma2 The variances for the \emph{K} regimes. If HMMR model is
+#' homoskedastic (`variance_type` = "homoskedastic") then `sigma2` is a
+#' matrix of size \eqn{(1, 1)}, else if HMMR model is heteroskedastic
+#' (`variance_type` = "heteroskedastic") then `sigma2` is a matrix of size
+#' \eqn{(K, 1)}.
+#' @field nu The degree of freedom of the HMMR model.
+#' @field phi A designed matrix for the polynomial regressions.
+#' @seealso [FData]
 #' @export
 ParamHMMR <- setRefClass(
   "ParamHMMR",
@@ -35,7 +58,7 @@ ParamHMMR <- setRefClass(
         nu <<- K - 1 + K * (K - 1) + K * (p + 1) + K
       }
 
-      prior <<- matrix(NA, ncol = K - 1)
+      prior <<- matrix(NA, ncol = K)
       trans_mat <<- matrix(NA, K, K)
       beta <<- matrix(NA, p + 1, K)
       if (variance_type == "homoskedastic") {
@@ -48,32 +71,14 @@ ParamHMMR <- setRefClass(
 
     },
 
-    initHmmr = function(try_algo = 1) {
-      # function hmmr =  initHmmr(X, y, K, type_variance, EM_try)
-      # initHmmr initialize the parameters of a Gaussian Hidden Markov Model
-      # Regression (HMMR) model
-      #
-      # Inputs :
-      #
-      #           X: [nx(p+1)] regression desing matrix
-      #           K : Number of polynomial regression components (regimes)
-      #          	type_variance: hoskedastoc or heteroskedastic
-      #           EM_try: number of the current EM run
-      #
-      # Outputs :
-      #
-      #         hmmr: the initial HMMR model. a structure composed of:
-      #
-      #         prior: [Kx1]: prior(k) = Pr(z_1=k), k=1...K
-      #         trans_mat: [KxK], trans_mat(\ell,k) = Pr(z_t = k|z_{t-1}=\ell)
-      #         reg_param: the paramters of the regressors:
-      #                 betak: regression coefficients
-      #                 sigma2k (or sigma2) : the variance(s). sigma2k(k) = variance of y(t) given z(t)=k; sigma2k(k) =
-      #         sigma^2_k.
-      #         and some stats: like the mask for a segmental model
-      #
-      #
-      ##################################################################################
+    initParam = function(try_algo = 1) {
+      "Method to initialize parameters \\code{prior}, \\code{trans_mat},
+      \\code{beta} and \\code{sigma2}.
+
+      If try_algo = 1 then \\code{beta} and \\code{sigma2} are
+      initialized by segmenting uniformly into \\code{K} contiguous segments
+      the response Y. Otherwise, \\code{beta} and \\code{sigma2} are
+      initialized by segmenting randomly the response Y into \\code{K} segments."
 
       # Initialization taking into account the constraint:
 
@@ -91,12 +96,6 @@ ParamHMMR <- setRefClass(
       prior <<- matrix(c(1, rep(0, K - 1)))
 
       # Initialization of regression coefficients and variances
-      initHmmrRegressors(try_algo)
-
-    },
-
-    initHmmrRegressors = function(try_algo = 1) {
-
       if (try_algo == 1) { # Uniform segmentation into K contiguous segments, and then a regression
 
         zi <- round(fData$m / K) - 1
@@ -154,9 +153,12 @@ ParamHMMR <- setRefClass(
           }
         }
       }
+
     },
 
     MStep = function(statHMMR) {
+      "Method used in the EM algorithm to learn the parameters of the HMMR model
+      based on statistics provided by \\code{statHMMR}."
       # Updates of the Markov chain parameters
       # Initial states prob: P(Z_1 = k)
       prior <<- matrix(normalize(statHMMR$tau_tk[1, ])$M)

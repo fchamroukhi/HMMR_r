@@ -1,3 +1,58 @@
+#' A Reference Class which contains statistics of a HMMR model.
+#'
+#' StatHMMR contains all the parameters of a [HMMR][ParamHMMR] model.
+#'
+#' @field tau_tk Matrix of size \eqn{(m, K)} giving the posterior probability that
+#' the observation \eqn{Y_{t}}{Y_{t}} originates from the \eqn{k}-th
+#' regression model \eqn{P(z\_t = k | Y_{1},\dots,Y_{m})}{P(z_t = k | Y_{1},\dots,Y_{m})}.
+#' @field alpha_tk Matrix of size \eqn{(m, K)} giving the forwards
+#' probabilities: \eqn{P(Y_{1},\dots,Y_{t}, z\_t = k)}{P(Y_{1},\dots,Y_{t}, z_t = k)}.
+#' @field beta_tk Matrix of size \eqn{(m, K)}, giving the backwards
+#' probabilities: \eqn{P(Y_{t+1},\dots,Y_{m} | z\_t = k)}{P(Y_{t+1},\dots,Y_{m} | z_t = k)}.
+#' @field xi_tkl Array of size \eqn{(m - 1, K, K)} giving the joint post
+#' probabilities: \eqn{xi_tk[t, k, l] = P(z\_t = k, z_{t-1} = l | Y)}{xi_tk[t, k, l] = P(z_t = k, z_{t-1} = l | Y)}
+#' for \eqn{t = 2,\dots,m}.
+#' @field f_tk Matrix of size \eqn{(m, K)} giving the cumulative distribution
+#' function \eqn{f(yt | z\_t = k)}{f(yt | z_t = k)}.
+#' @field log_f_tk Matrix of size \eqn{(m, K)} giving the logarithm of the
+#' cumulative distribution `f_tk`.
+#' @field loglik Numeric. Log-likelihood of the HMMR model.
+#' @field stored_loglik List. Stored values of the log-likelihood at each
+#' iteration of the EM algorithm.
+#' @field cpu_time Numeric. Average executon time of the EM algorithm. for the best run.
+#' @field klas Column matrix of the labels issued from `z_ik`. Its elements are
+#' \eqn{klas(i) = k}, \eqn{k = 1,\dots,K}.
+#' @field z_ik Hard segmentation logical matrix of dimension \eqn{(m, K)}
+#' obtained by the Maximum a posteriori (MAP) rule:
+#' \eqn{z_{ik} = 1 \ \textrm{if} \ z_{ik} = \textrm{arg} \ \textrm{max}_{k} \
+#' P(z_i = k | Y) = tau_ik;\ 0 \ \textrm{otherwise}}{z_ik = 1 if z_ik =
+#' arg max_k P(z_i = k | Y) = tau_ik; 0 otherwise}, \eqn{k = 1,\dots,K}.
+#' @field state_probs Matrix of size \eqn{(m, K)} giving the distribution of
+#' the Markov chain \eqn{P(z_{1},\dots,z_{m};\pi,A)}{P(z_{1},\dots,z_{m};\pi,A)}
+#' with \eqn{\pi} the prior probabilities (field `prior` of the class
+#' [ParamHMMR][ParamHMMR]) and \eqn{A} the transition matrix (field `trans_mat`
+#' of the class [ParamHMMR][ParamHMMR]) of the Markov chain.
+#' @field BIC Numeric. Value of the BIC (Bayesian Information Criterion)
+#' criterion. The formula is \eqn{BIC = loglik - nu \times
+#' \textrm{log}(m) / 2}{BIC = loglik - nu x log(m) / 2} with `nu` the
+#' degree of freedom of the HMMR model.
+#' @field AIC Numeric. Value of the AIC (Akaike Information Criterion)
+#' criterion. The formula is \eqn{AIC = loglik - nu}.
+#' @field regressors Matrix of size \eqn{(m, K)} giving the values of
+#' \eqn{\beta_{k} \times X_{i}}{\beta_{k} x X_{i}}, \eqn{i = 1,\dots,m}.
+#' @field predict_prob Matrix of size \eqn{(m, K)} giving the prediction
+#' probabilities: \eqn{P(z\_t = k | y_{1},\dots,y_{t-1})}{P(z_t = k | y_{1},\dots,y_{t-1})}.
+#' @field predicted Row matrix of size \eqn{(m, 1)} giving the predicted
+#' observations \eqn{\sum_{k} P(z\_t = k | y_{1},\dots,y_{t-1}) \times \beta_{k} \times X_{i}}{\sum_{k} P(z_t = k | y_{1},\dots,y_{t-1}) x \betak x X_{i}}.
+#' @field filter_prob Matrix of size \eqn{(m, K)} giving the filtering
+#' probabilities \eqn{Pr(z\_t = k | y_{1},\dots,y_{t})}{Pr(z_t = k | y_{1},\dots,y_{t})}.
+#' @field filtered Row matrix of size \eqn{(m, 1)} giving the filetered
+#' observations \eqn{\sum_{k} P(z\_t = k | y_{1},\dots,y_{t}) \times \beta_{k} \times X_{i}}{\sum_{k} P(z_t = k | y_{1},\dots,y_{t}) x \betak x X_{i}}.
+#' @field smoothed_regressors Matrix of size \eqn{(m, K)} giving the smoothed observations:
+#' \eqn{P(z\_i = k | Y_{1},\dots,Y_{n}) \times \beta_{k} \times X_{i}}{P(z_i = k | Y_{1},\dots,Y_{n}) x \betak x X_{i}}.
+#' @field smoothed Row matrix of size \eqn{(m, 1)} giving:
+#' \eqn{\sum_{k} P(z\_i = k | Y_{1},\dots,Y_{n}) \times \beta_{k} \times X_{i}}{\sum_{k}  P(z_i = k | Y_{1},\dots,Y_{n}) x \betak x X_{i}}
+#' @seealso [ParamHMMR], [FData]
 #' @export
 StatHMMR <- setRefClass(
   "StatHMMR",

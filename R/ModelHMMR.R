@@ -1,3 +1,12 @@
+#' A Reference Class which represents a fitted HMMR model.
+#'
+#' ModelHMMR represents a [HMMR][ModelHMMR] model for which parameters have
+#' been estimated.
+#'
+#' @usage NULL
+#' @field paramHMMR A [ParamHMMR][ParamHMMR] object. It contains the estimated values of the parameters.
+#' @field statHMMR A [StatHMMR][StatHMMR] object. It contains all the statistics associated to the HMMR model.
+#' @seealso [ParamHMMR], [StatHMMR]
 #' @export
 ModelHMMR <- setRefClass(
   "ModelHMMR",
@@ -7,7 +16,17 @@ ModelHMMR <- setRefClass(
   ),
   methods = list(
     plot = function(what = c("predicted", "filtered", "smoothed", "regressors")) {
-
+      "Plot method.
+      \\describe{
+        \\item{\\code{what}}{The type of graph requested:
+          \\itemize{
+            \\item \"predicted\"
+            \\item \"filtered\"
+            \\item \"smoothed\"
+            \\item \"regressors\"
+          }
+        }
+      }"
       what <- match.arg(what, several.ok = TRUE)
 
       oldpar <- par()[c("mfrow", "mai", "mgp")]
@@ -95,7 +114,7 @@ ModelHMMR <- setRefClass(
     },
 
     summary = function() {
-
+      "Summary method."
       digits = getOption("digits")
 
       title <- paste("Fitted HMMR model")

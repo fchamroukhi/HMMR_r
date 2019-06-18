@@ -1,3 +1,21 @@
+#' selectHMMR is used to select a HMMR model based on criteria such as BIC or AIC.
+#'
+#' @details selectHMMR is used to select the "best" HMMR model according to some
+#' criteria such as BIC or AIC. This function runs every HMMR model by varying
+#' the number of regimes `K` from `Kmin` to `Kmax` and the order of the
+#' polynomial regression `p` from `pmin` to `pmax`.
+#'
+#' @param X Numeric vector of length \emph{m} representing the covariates.
+#' @param Y Matrix of size \eqn{(n, m)} representing \emph{n} functions of `X`
+#' observed at points \eqn{1,\dots,m}.
+#' @param Kmin The minimum number of regimes (mixture components).
+#' @param Kmax The maximum number of regimes (mixture components).
+#' @param pmin The minimum order of the polynomial regression.
+#' @param pmax The maximum order of the polynomial regression.
+#' @param criterion The criterion used to select the "best" HMMR model.
+#' @return selectHMMR returns an object of class [ModelHMMR][ModelHMMR]
+#' representing the "best" HMMR model according to the selected `criterion`.
+#' @seealso [ModelHMMR]
 #' @export
 selectHMMR <- function(X, Y, Kmin = 1, Kmax = 10, pmin = 0, pmax = 4, criterion = c("BIC", "AIC")) {
 

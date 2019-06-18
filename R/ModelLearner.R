@@ -1,3 +1,39 @@
+#' emHMMR is used to fit a HMMR model.
+#'
+#' emHMMR is used to fit a HMMR model. The estimation method is performed by
+#' the Expectation-Maximization algorithm.
+#'
+#' @details emHMMR function is based on the EM algorithm. This function starts
+#' with an initialization of the parameters done by the method `initParam` of
+#' the class [ParamHMMR][ParamHMMR], then it alternates between a E-Step
+#' (method of the class [StatHMMR][StatHMMR]) and a M-Step (method of the class
+#' [ParamHMMR][ParamHMMR]) until convergence (until the absolute difference of
+#' log-likelihood between two steps of the EM algorithm is less than the
+#' `threshold` parameter).
+#'
+#' @param X Numeric vector of length \emph{m} representing the covariates.
+#' @param Y Matrix of size \eqn{(n, m)} representing \emph{n} functions of `X`
+#' observed at points \eqn{1,\dots,m}.
+#' @param K The number of regimes (mixture components).
+#' @param p The order of the polynomial regression.
+#' @param variance_type Optional character indicating if the model is
+#' "homoskedastic" or "heteroskedastic". By default the model is
+#' "heteroskedastic".
+#' @param n_tries Optional. Number of times EM algorithm will be launched.
+#' The solution providing the highest log-likelihood will be returned.
+#'
+#' If `n_tries` > 1, then for the first pass, parameters are initialized
+#' by uniformly segmenting the data into K segments, and for the next passes,
+#' parameters are initialized by randomly segmenting the data into K contiguous
+#'  segments.
+#' @param max_iter Optional. The maximum number of iterations for the EM algorithm.
+#' @param threshold Optional. A numeric value specifying the threshold for the relative
+#'  difference of log-likelihood between two steps  of the EM as stopping
+#'  criteria.
+#' @param verbose Optional. A logical value indicating whether values of the
+#' log-likelihood should be printed during EM iterations.
+#' @return EM returns an object of class [ModelHMMR][ModelHMMR].
+#' @seealso [ModelHMMR], [ParamHMMR], [StatHMMR]
 #' @export
 emHMMR <- function(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedastic"), n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
 
@@ -22,7 +58,7 @@ emHMMR <- function(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedast
     ## Initialization of the Markov chain params, the regression coeffs, and the variance(s)
     variance_type <- match.arg(variance_type)
     param <- ParamHMMR$new(fData = fData, K = K, p = p, variance_type = variance_type)
-    param$initHmmr(nb_good_try + 1)
+    param$initParam(nb_good_try + 1)
 
     iter <- 0
     prev_loglik <- -Inf
