@@ -49,22 +49,22 @@ library(HMMR)
 
 data("simulatedtimeserie")
 
-K <- 5 # number of regimes (states)
-p <- 3 # dimension of beta (order of the polynomial regressors)
-variance_type <- variance_types$heteroskedastic
+K <- 5 # Number of regimes (states)
+p <- 3 # Dimension of beta (order of the polynomial regressors)
+variance_type <- "heteroskedastic" # "heteroskedastic" or "homoskedastic" model
 
 n_tries <- 1
 max_iter <- 1500
 threshold <- 1e-6
 verbose <- TRUE
 
-solution <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]), K, p, variance_type, n_tries, max_iter, threshold, verbose)
+hmmr <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]), K, p, variance_type, n_tries, max_iter, threshold, verbose)
 #> [1] "HMM_regression | EM   : Iteration : 1  Log-likelihood :  -1556.39696825601"
 #> [1] "HMM_regression | EM   : Iteration : 2  Log-likelihood :  -1022.47935723687"
 #> [1] "HMM_regression | EM   : Iteration : 3  Log-likelihood :  -1019.51830707432"
 #> [1] "HMM_regression | EM   : Iteration : 4  Log-likelihood :  -1019.51780361388"
 
-solution$plot()
+hmmr$plot()
 ```
 
 <img src="man/figures/README-unnamed-chunk-5-1.png" style="display: block; margin: auto;" /><img src="man/figures/README-unnamed-chunk-5-2.png" style="display: block; margin: auto;" /><img src="man/figures/README-unnamed-chunk-5-3.png" style="display: block; margin: auto;" /><img src="man/figures/README-unnamed-chunk-5-4.png" style="display: block; margin: auto;" />

@@ -121,10 +121,10 @@ ModelHMMR <- setRefClass(
       colnames(betas) <- sapply(1:paramHMMR$K, function(x) paste0("Beta(K = ", x, ")"))
       print(betas, digits = digits)
 
-      cat(paste0(ifelse(paramHMMR$variance_type == variance_types$homoskedastic, "\n\n",
+      cat(paste0(ifelse(paramHMMR$variance_type == "homoskedastic", "\n\n",
                         "\nVariances:\n\n")))
       sigma2 = data.frame(t(paramHMMR$sigma2), row.names = NULL)
-      if (paramHMMR$variance_type == variance_types$homoskedastic) {
+      if (paramHMMR$variance_type == "homoskedastic") {
         colnames(sigma2) = "Sigma2"
         print(sigma2, digits = digits, row.names = FALSE)
       } else {

@@ -27,7 +27,6 @@ LinkingTo:
 Collate:
     HMMR-package.R
     RcppExports.R
-    enums.R
     utils.R
     mkStochastic.R
     hmmProcess.R

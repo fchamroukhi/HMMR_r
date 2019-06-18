@@ -43,9 +43,9 @@ data("simulatedtimeserie")
 # Set up HMMR model parameters
 
 ```{r}
-K <- 5 # number of regimes (states)
-p <- 3 # dimension of beta (order of the polynomial regressors)
-variance_type <- variance_types$heteroskedastic
+K <- 5 # Number of regimes (states)
+p <- 3 # Dimension of beta (order of the polynomial regressors)
+variance_type <- "heteroskedastic" # "heteroskedastic" or "homoskedastic" model
 ```
 
 # Set up EM parameters
@@ -60,17 +60,17 @@ verbose <- TRUE
 # Estimation
 
 ```{r}
-solution <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]), K, p, variance_type, n_tries, max_iter, threshold, verbose)
+hmmr <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]), K, p, variance_type, n_tries, max_iter, threshold, verbose)
 ```
 
 # Summary
 
 ```{r}
-solution$summary()
+hmmr$summary()
 ```
 
 # Plots
 
 ```{r}
-solution$plot()
+hmmr$plot()
 ```

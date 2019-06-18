@@ -1,5 +1,5 @@
 #' @export
-emHMMR <- function(X, Y, K, p, variance_type = 2, n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
+emHMMR <- function(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedastic"), n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
 
   fData <- FData$new(X, Y)
 
@@ -18,6 +18,7 @@ emHMMR <- function(X, Y, K, p, variance_type = 2, n_tries = 1, max_iter = 1500, 
 
     ## EM Initializaiton step
     ## Initialization of the Markov chain params, the regression coeffs, and the variance(s)
+    variance_type <- match.arg(variance_type)
     param <- ParamHMMR$new(fData = fData, K = K, p = p, variance_type = variance_type)
     param$initHmmr(nb_good_try + 1)
 
