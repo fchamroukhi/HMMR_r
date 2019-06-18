@@ -71,6 +71,26 @@ hmmr$summary()
 
 # Plots
 
+## Predicted time series and predicted regime probabilities
+
 ```{r}
-hmmr$plot()
+hmmr$plot(what = "predicted")
+```
+
+## Filtered time series and filtering regime probabilities
+
+```{r}
+hmmr$plot(what = "filtered")
+```
+
+## Fitted regressors
+
+```{r}
+hmmr$plot(what = "regressors")
+```
+
+## Smoothed time series and segmentation
+
+```{r}
+hmmr$plot(what = "smoothed")
 ```
