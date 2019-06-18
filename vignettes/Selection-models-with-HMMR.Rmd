@@ -1,0 +1,69 @@
++---
+title: "Selection-models-with-HMMR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Selection-models-with-HMMR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+	fig.align = "center",
+	fig.height = 5.5,
+	fig.width = 6,
+	warning = FALSE,
+	collapse = TRUE,
+	dev.args = list(pointsize = 10),
+	out.width = "90%",
+	par = TRUE
+)
+knit_hooks$set(par = function(before, options, envir)
+  { if (before && options$fig.show != "none") 
+       par(family = "sans", mar = c(4.1,4.1,1.1,1.1), mgp = c(3,1,0), tcl = -0.5)
+})
+```
+
+```{r, message = FALSE, echo = FALSE}
+library(HMMR)
+```
+
+# Introduction
+
+In this package, it is possible to select models using some criteria such as **BIC** 
+and **AIC**.
+
+The selection is done on two parameters which are:
+
+ * **K**: The number of regimes;
+ * **p**: The order of the polyniomial regression.
+
+# Data
+
+Let's select a HMMR model for the following serie Y which is a simulated time serie:
+
+```{r}
+data("simulatedtimeserie")
+plot(simulatedtimeserie$X, simulatedtimeserie$Y, type = "l", xlab = "x", ylab = "Y")
+```
+
+# Model selection based on BIC
+
+```{r}
+selectedhmmr <- selectHMMR(X = simulatedtimeserie$X, t(simulatedtimeserie$Y), 
+                           Kmin = 2, Kmax = 6, pmin = 0, pmax = 3)
+```
+
+The selected model has $K = 5$ regimes and the order of the polynomial regression is
+$p = 0$. According to the way Y has been generated, these parameters are what we expexted.
+
+Let's summarize the selected model:
+
+```{r}
+selectedhmmr$summary()
+```
+
+```{r}
+selectedhmmr$plot(what = "smoothed")
+```
