@@ -8,10 +8,11 @@ emHMMR(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedastic"),
   n_tries = 1, max_iter = 1500, threshold = 1e-06, verbose = FALSE)
 }
 \arguments{
-\item{X}{Numeric vector of length \emph{m} representing the covariates.}
+\item{X}{Numeric vector of length \emph{m} representing the covariates/inputs
+\eqn{x_{1},\dots,x_{m}}.}
 
-\item{Y}{Matrix of size \eqn{(n, m)} representing \emph{n} functions of \code{X}
-observed at points \eqn{1,\dots,m}.}
+\item{Y}{Numeric vector of length \emph{m} representing the observed
+response/output \eqn{y_{1},\dots,y_{m}}.}
 
 \item{K}{The number of regimes (mixture components).}
 

@@ -2,7 +2,11 @@
 #'
 #' ParamHMMR contains all the parameters of a HMMR model.
 #'
-#' @field fData [FData][FData] object representing the sample.
+#' @field X Numeric vector of length \emph{m} representing the covariates/inputs
+#' \eqn{x_{1},\dots,x_{m}}.
+#' @field Y Numeric vector of length \emph{m} representing the observed
+#' response/output \eqn{y_{1},\dots,y_{m}}.
+#' @field m Numeric. Length of the response/output vector `Y`.
 #' @field K The number of regimes (mixture components).
 #' @field p The order of the polynomial regression.
 #' @field variance_type Character indicating if the model is homoskedastic
@@ -20,12 +24,13 @@
 #' \eqn{(K, 1)}.
 #' @field nu The degree of freedom of the HMMR model.
 #' @field phi A designed matrix for the polynomial regressions.
-#' @seealso [FData]
 #' @export
 ParamHMMR <- setRefClass(
   "ParamHMMR",
   fields = list(
-    fData = "FData",
+    X = "numeric",
+    Y = "numeric",
+    m = "numeric",
     phi = "matrix",
 
     K = "numeric", # Number of regimes
@@ -41,11 +46,12 @@ ParamHMMR <- setRefClass(
   ),
   methods = list(
 
-    initialize = function(fData = FData(numeric(1), matrix(1)), K = 2, p = 2, variance_type = "heteroskedastic") {
+    initialize = function(X = numeric(), Y = numeric(1), K = 2, p = 3, variance_type = "heteroskedastic") {
 
-      fData <<- fData
-
-      phi <<- designmatrix(x = fData$X, p = p)$XBeta
+      X <<- X
+      Y <<- Y
+      m <<- length(Y)
+      phi <<- designmatrix(x = X, p = p)$XBeta
 
       K <<- K
       p <<- p
@@ -98,11 +104,11 @@ ParamHMMR <- setRefClass(
       # Initialization of regression coefficients and variances
       if (try_algo == 1) { # Uniform segmentation into K contiguous segments, and then a regression
 
-        zi <- round(fData$m / K) - 1
+        zi <- round(m / K) - 1
 
         s <- 0 # If homoskedastic
         for (k in 1:K) {
-          yk <- fData$Y[((k - 1) * zi + 1):(k * zi)]
+          yk <- Y[((k - 1) * zi + 1):(k * zi)]
           Xk <- as.matrix(phi[((k - 1) * zi + 1):(k * zi), ])
 
           beta[, k] <<- solve(t(Xk) %*% Xk + (10 ^ -4) * diag(p + 1)) %*% t(Xk) %*% yk
@@ -111,7 +117,7 @@ ParamHMMR <- setRefClass(
           sk <- t(yk - muk) %*% (yk - muk)
           if (variance_type == "homoskedastic") {
             s <- (s + sk)
-            sigma2 <<- s / fData$m
+            sigma2 <<- s / m
           }
           else {
             sigma2[k] <<- sk / length(yk)
@@ -127,17 +133,17 @@ ParamHMMR <- setRefClass(
         K_1 <- K
         for (k in 2:K) {
           K_1 <- K_1 - 1
-          temp <- seq(tk_init[k - 1] + Lmin, fData$m - K_1 * Lmin)
+          temp <- seq(tk_init[k - 1] + Lmin, m - K_1 * Lmin)
           ind <- sample(1:length(temp), length(temp))
           tk_init[k] <- temp[ind[1]]
         }
-        tk_init[K + 1] <- fData$m
+        tk_init[K + 1] <- m
 
         s <- 0
         for (k in 1:K) {
           i <- tk_init[k] + 1
           j <- tk_init[k + 1]
-          yk <- fData$Y[i:j]
+          yk <- Y[i:j]
           Xk <- phi[i:j, ]
           beta[, k] <<- solve(t(Xk) %*% Xk + 1e-4 * diag(p + 1)) %*% t(Xk) %*% yk
           muk <- Xk %*% beta[, k]
@@ -145,7 +151,7 @@ ParamHMMR <- setRefClass(
 
           if (variance_type == "homoskedastic") {
             s <- s + sk
-            sigma2 <<- s / fData$m
+            sigma2 <<- s / m
 
           }
           else{
@@ -176,7 +182,7 @@ ParamHMMR <- setRefClass(
 
         nk <- sum(weights) # Expected cardinal number of state k
         Xk <- phi * (sqrt(weights) %*% matrix(1, 1, p + 1)) # [n*(p+1)]
-        yk <- fData$Y * sqrt(weights) # dimension: [(nx1).*(nx1)] = [nx1]
+        yk <- Y * sqrt(weights) # dimension: [(nx1).*(nx1)] = [nx1]
 
         # Regression coefficients
         lambda <- 1e-9 # If a bayesian prior on the beta's
@@ -184,11 +190,11 @@ ParamHMMR <- setRefClass(
         beta[, k] <<- bk
 
         # Variance(s)
-        z <- sqrt(weights) * (fData$Y - phi %*% bk)
+        z <- sqrt(weights) * (Y - phi %*% bk)
         sk <- t(z) %*% z
         if (variance_type == "homoskedastic") {
           s <- (s + sk)
-          sigma2 <<- s / fData$m
+          sigma2 <<- s / m
         }
         else{
           sigma2[k] <<- sk / nk

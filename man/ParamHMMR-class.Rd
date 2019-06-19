@@ -11,7 +11,13 @@ ParamHMMR contains all the parameters of a HMMR model.
 \section{Fields}{
 
 \describe{
-\item{\code{fData}}{\link{FData} object representing the sample.}
+\item{\code{X}}{Numeric vector of length \emph{m} representing the covariates/inputs
+\eqn{x_{1},\dots,x_{m}}.}
+
+\item{\code{Y}}{Numeric vector of length \emph{m} representing the observed
+response/output \eqn{y_{1},\dots,y_{m}}.}
+
+\item{\code{m}}{Numeric. Length of the response/output vector \code{Y}.}
 
 \item{\code{K}}{The number of regimes (mixture components).}
 
@@ -55,6 +61,3 @@ matrix of size \eqn{(1, 1)}, else if HMMR model is heteroskedastic
 based on statistics provided by \code{statHMMR}.}
 }}
 
-\seealso{
-\link{FData}
-}

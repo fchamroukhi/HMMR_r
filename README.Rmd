@@ -61,7 +61,7 @@ max_iter <- 1500
 threshold <- 1e-6
 verbose <- TRUE
 
-hmmr <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie[, 2:ncol(simulatedtimeserie)]), 
+hmmr <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie$Y), 
                K, p, variance_type, n_tries, max_iter, threshold, verbose)
 
 hmmr$summary()

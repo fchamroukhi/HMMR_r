@@ -11,9 +11,10 @@
 #' log-likelihood between two steps of the EM algorithm is less than the
 #' `threshold` parameter).
 #'
-#' @param X Numeric vector of length \emph{m} representing the covariates.
-#' @param Y Matrix of size \eqn{(n, m)} representing \emph{n} functions of `X`
-#' observed at points \eqn{1,\dots,m}.
+#' @param X Numeric vector of length \emph{m} representing the covariates/inputs
+#' \eqn{x_{1},\dots,x_{m}}.
+#' @param Y Numeric vector of length \emph{m} representing the observed
+#' response/output \eqn{y_{1},\dots,y_{m}}.
 #' @param K The number of regimes (mixture components).
 #' @param p The order of the polynomial regression.
 #' @param variance_type Optional character indicating if the model is
@@ -37,8 +38,6 @@
 #' @export
 emHMMR <- function(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedastic"), n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
 
-  fData <- FData$new(X, Y)
-
   nb_good_try <- 0
   total_nb_try <- 0
   best_loglik <- -Inf
@@ -57,7 +56,7 @@ emHMMR <- function(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedast
     ## EM Initializaiton step
     ## Initialization of the Markov chain params, the regression coeffs, and the variance(s)
     variance_type <- match.arg(variance_type)
-    param <- ParamHMMR$new(fData = fData, K = K, p = p, variance_type = variance_type)
+    param <- ParamHMMR$new(X = X, Y = Y, K = K, p = p, variance_type = variance_type)
     param$initParam(nb_good_try + 1)
 
     iter <- 0

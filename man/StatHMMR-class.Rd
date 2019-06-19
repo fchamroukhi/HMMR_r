@@ -85,5 +85,5 @@ observations \eqn{\sum_{k} P(z\_t = k | y_{1},\dots,y_{t}) \times \beta_{k} \tim
 
 
 \seealso{
-\link{ParamHMMR}, \link{FData}
+\link{ParamHMMR}
 }

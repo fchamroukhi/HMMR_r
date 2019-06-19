@@ -52,7 +52,7 @@
 #' \eqn{P(z\_i = k | Y_{1},\dots,Y_{n}) \times \beta_{k} \times X_{i}}{P(z_i = k | Y_{1},\dots,Y_{n}) x \betak x X_{i}}.
 #' @field smoothed Row matrix of size \eqn{(m, 1)} giving:
 #' \eqn{\sum_{k} P(z\_i = k | Y_{1},\dots,Y_{n}) \times \beta_{k} \times X_{i}}{\sum_{k}  P(z_i = k | Y_{1},\dots,Y_{n}) x \betak x X_{i}}
-#' @seealso [ParamHMMR], [FData]
+#' @seealso [ParamHMMR]
 #' @export
 StatHMMR <- setRefClass(
   "StatHMMR",
@@ -81,29 +81,29 @@ StatHMMR <- setRefClass(
   ),
   methods = list(
 
-    initialize = function(paramHMMR = ParamHMMR(fData = FData(numeric(1), matrix(1)), K = 2, p = 2, variance_type = "heteroskedastic")) {
+    initialize = function(paramHMMR = ParamHMMR()) {
 
-      tau_tk <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # tau_tk: smoothing probs: [nxK], tau_tk(t,k) = Pr(z_i=k | y1...yn)
-      alpha_tk <<- matrix(NA, paramHMMR$fData$m, ncol = paramHMMR$K) # alpha_tk: [nxK], forwards probs: Pr(y1...yt,zt=k)
-      beta_tk <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # beta_tk: [nxK], backwards probs: Pr(yt+1...yn|zt=k)
-      xi_tkl <<- array(NA, c(paramHMMR$fData$m - 1, paramHMMR$K, paramHMMR$K)) # xi_tkl: [(n-1)xKxK], joint post probs : xi_tk\elll(t,k,\ell)  = Pr(z_t=k, z_{t-1}=\ell | Y) t =2,..,n
-      f_tk <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # f_tk: [nxK] f(yt|zt=k)
-      log_f_tk <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # log_f_tk: [nxK] log(f(yt|zt=k))
+      tau_tk <<- matrix(NA, paramHMMR$m, paramHMMR$K) # tau_tk: smoothing probs: [nxK], tau_tk(t,k) = Pr(z_i=k | y1...yn)
+      alpha_tk <<- matrix(NA, paramHMMR$m, ncol = paramHMMR$K) # alpha_tk: [nxK], forwards probs: Pr(y1...yt,zt=k)
+      beta_tk <<- matrix(NA, paramHMMR$m, paramHMMR$K) # beta_tk: [nxK], backwards probs: Pr(yt+1...yn|zt=k)
+      xi_tkl <<- array(NA, c(paramHMMR$m - 1, paramHMMR$K, paramHMMR$K)) # xi_tkl: [(n-1)xKxK], joint post probs : xi_tk\elll(t,k,\ell)  = Pr(z_t=k, z_{t-1}=\ell | Y) t =2,..,n
+      f_tk <<- matrix(NA, paramHMMR$m, paramHMMR$K) # f_tk: [nxK] f(yt|zt=k)
+      log_f_tk <<- matrix(NA, paramHMMR$m, paramHMMR$K) # log_f_tk: [nxK] log(f(yt|zt=k))
       loglik <<- -Inf # loglik: log-likelihood at convergence
       stored_loglik <<- list() # stored_loglik: stored log-likelihood values during EM
       cputime <<- Inf # cputime: for the best run
-      klas <<- matrix(NA, paramHMMR$fData$m, 1) # klas: [nx1 double]
-      z_ik <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # z_ik: [nxK]
-      state_probs <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # state_probs: [nxK]
+      klas <<- matrix(NA, paramHMMR$m, 1) # klas: [nx1 double]
+      z_ik <<- matrix(NA, paramHMMR$m, paramHMMR$K) # z_ik: [nxK]
+      state_probs <<- matrix(NA, paramHMMR$m, paramHMMR$K) # state_probs: [nxK]
       BIC <<- -Inf # BIC
       AIC <<- -Inf # AIC
-      regressors <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # regressors: [nxK]
-      predict_prob <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # predict_prob: [nxK]: Pr(zt=k|y1...y_{t-1})
-      predicted <<- matrix(NA, paramHMMR$fData$m, 1) # predicted: [nx1]
-      filter_prob <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # filter_prob: [nxK]: Pr(zt=k|y1...y_t)
-      filtered <<- matrix(NA, paramHMMR$fData$m, 1) # filtered: [nx1]
-      smoothed_regressors <<- matrix(NA, paramHMMR$fData$m, paramHMMR$K) # smoothed_regressors: [nxK]
-      smoothed <<- matrix(NA, paramHMMR$fData$m, 1) # smoothed: [nx1]
+      regressors <<- matrix(NA, paramHMMR$m, paramHMMR$K) # regressors: [nxK]
+      predict_prob <<- matrix(NA, paramHMMR$m, paramHMMR$K) # predict_prob: [nxK]: Pr(zt=k|y1...y_{t-1})
+      predicted <<- matrix(NA, paramHMMR$m, 1) # predicted: [nx1]
+      filter_prob <<- matrix(NA, paramHMMR$m, paramHMMR$K) # filter_prob: [nxK]: Pr(zt=k|y1...y_t)
+      filtered <<- matrix(NA, paramHMMR$m, 1) # filtered: [nx1]
+      smoothed_regressors <<- matrix(NA, paramHMMR$m, paramHMMR$K) # smoothed_regressors: [nxK]
+      smoothed <<- matrix(NA, paramHMMR$m, 1) # smoothed: [nx1]
 
     },
 
@@ -129,10 +129,10 @@ StatHMMR <- setRefClass(
       cputime <<- mean(cputime_total)
 
       # State sequence prob p(z_1,...,z_n;\pi,A)
-      state_probs <<- hmmProcess(paramHMMR$prior, paramHMMR$trans_mat, paramHMMR$fData$m)
+      state_probs <<- hmmProcess(paramHMMR$prior, paramHMMR$trans_mat, paramHMMR$m)
 
       # BIC, AIC, ICL
-      BIC <<- loglik - paramHMMR$nu * log(paramHMMR$fData$m) / 2
+      BIC <<- loglik - paramHMMR$nu * log(paramHMMR$m) / 2
       AIC <<- loglik - paramHMMR$nu
 
       # # CL(theta) : Completed-data loglikelihood
@@ -146,7 +146,7 @@ StatHMMR <- setRefClass(
 
       # Prediction probabilities = Pr(z_t|y_1,...,y_{t-1})
       predict_prob[1, ] <<- paramHMMR$prior # t=1 p (z_1)
-      predict_prob[2:paramHMMR$fData$m, ] <<- (alpha_tk[(1:(paramHMMR$fData$m - 1)), ] %*% paramHMMR$trans_mat) / (apply(alpha_tk[(1:(paramHMMR$fData$m - 1)), ], 1, sum) %*% matrix(1, 1, paramHMMR$K)) # t = 2,...,n
+      predict_prob[2:paramHMMR$m, ] <<- (alpha_tk[(1:(paramHMMR$m - 1)), ] %*% paramHMMR$trans_mat) / (apply(alpha_tk[(1:(paramHMMR$m - 1)), ], 1, sum) %*% matrix(1, 1, paramHMMR$K)) # t = 2,...,n
 
       # Predicted observations
       predicted <<- matrix(apply(predict_prob * regressors, 1, sum)) # Weighted by prediction probabilities
@@ -164,7 +164,7 @@ StatHMMR <- setRefClass(
     },
 
     EStep = function(paramHMMR) {
-      muk <- matrix(0, paramHMMR$fData$m, paramHMMR$K)
+      muk <- matrix(0, paramHMMR$m, paramHMMR$K)
 
       # Observation likelihoods
       for (k in 1:paramHMMR$K) {
@@ -177,8 +177,8 @@ StatHMMR <- setRefClass(
         else{
           sk <- paramHMMR$sigma2[k]
         }
-        z <- ((paramHMMR$fData$Y - mk) ^ 2) / sk
-        log_f_tk[, k] <<- -0.5 * matrix(1, paramHMMR$fData$m, 1) %*% (log(2 * pi) + log(sk)) - 0.5 * z # log(gaussienne)
+        z <- ((paramHMMR$Y - mk) ^ 2) / sk
+        log_f_tk[, k] <<- -0.5 * matrix(1, paramHMMR$m, 1) %*% (log(2 * pi) + log(sk)) - 0.5 * z # log(gaussienne)
 
       }
 
