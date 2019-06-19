@@ -58,7 +58,7 @@ max_iter <- 1500
 threshold <- 1e-6
 verbose <- TRUE
 
-hmmr <- emHMMR(simulatedtimeserie$X, t(simulatedtimeserie$Y), 
+hmmr <- emHMMR(simulatedtimeserie$X, simulatedtimeserie$Y, 
                K, p, variance_type, n_tries, max_iter, threshold, verbose)
 #> EM: Iteration : 1 || log-likelihood : -1556.39696825601
 #> EM: Iteration : 2 || log-likelihood : -1022.47935723687
