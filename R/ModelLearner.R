@@ -36,7 +36,7 @@
 #' @return EM returns an object of class [ModelHMMR][ModelHMMR].
 #' @seealso [ModelHMMR], [ParamHMMR], [StatHMMR]
 #' @export
-emHMMR <- function(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedastic"), n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
+emHMMR <- function(X, Y, K, p = 3, variance_type = c("heteroskedastic", "homoskedastic"), n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
 
   nb_good_try <- 0
   total_nb_try <- 0
@@ -68,19 +68,19 @@ emHMMR <- function(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedast
 
     while ((iter <= max_iter) && !converged) {
 
-      ## E step : calculate tge tau_tk (p(Zt=k|y1...ym;theta)) and xi t_kl (and the log-likelihood) by
+      # E step : calculate tge tau_tk (p(Zt=k|y1...ym;theta)) and xi t_kl (and the log-likelihood) by
       #  forwards backwards (computes the alpha_tk et beta_tk)
       stat$EStep(param)
 
-      ## M step
+      # M step
       param$MStep(stat)
 
-      ## End of an EM iteration
+      # End of an EM iteration
 
       iter <-  iter + 1
 
-      # test of convergence
-      lambda <- 1e-9 # if a bayesian prior on the beta's
+      # Test of convergence
+      lambda <- 1e-9 # If a bayesian prior on the beta's
       stat$loglik <- stat$loglik + log(lambda)
 
       if (verbose) {
@@ -102,11 +102,9 @@ emHMMR <- function(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedast
       prev_loglik <- stat$loglik
       stat$stored_loglik[iter] <- stat$loglik
 
-    } # END EM LOOP
+    } # End of the EM loop
 
     cputime_total[nb_good_try + 1] <- Sys.time() - start_time
-
-    # at this point we have computed param and stat that contains all the information
 
     if (n_tries > 1) {
       cat(paste0("Max value of the log-likelihood: ", stat$loglik, "\n"))
@@ -138,7 +136,7 @@ emHMMR <- function(X, Y, K, p, variance_type = c("heteroskedastic", "homoskedast
   # Smoothing state sequences : argmax(smoothing probs), and corresponding binary allocations partition
   statSolution$MAP()
 
-  # FINISH computation of statSolution
+  # Finish the computation of statistics
   statSolution$computeStats(paramSolution, cputime_total)
 
   return(ModelHMMR(paramHMMR = paramSolution, statHMMR = statSolution))

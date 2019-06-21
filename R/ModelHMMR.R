@@ -45,8 +45,10 @@ ModelHMMR <- setRefClass(
 
         # Prediction probabilities of the hidden process (segmentation)
         plot.default(paramHMMR$X, statHMMR$predict_prob[, 1], type = "l", xlab = "x", ylab = expression('P(Z'[t] == k ~ '|' ~ list(y[1],..., y[t - 1]) ~ ')'), col = colorsvec[1], lwd = 1.5, main = "Prediction probabilities", ylim = c(0, 1))
-        for (k in 2:paramHMMR$K) {
-          lines(paramHMMR$X, statHMMR$predict_prob[, k], col = colorsvec[k], lwd = 1.5) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_{t-1})
+        if (paramHMMR$K > 1) {
+          for (k in 2:paramHMMR$K) {
+            lines(paramHMMR$X, statHMMR$predict_prob[, k], col = colorsvec[k], lwd = 1.5) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_{t-1})
+          }
         }
       }
 
@@ -60,8 +62,10 @@ ModelHMMR <- setRefClass(
         # Filtering probabilities of the hidden process (segmentation)
         plot.default(paramHMMR$X, statHMMR$filter_prob[, 1], type = "l", xlab = "x", ylab = expression('P(Z'[t] == k ~ '|' ~ list(y[1],..., y[t]) ~ ')'), col = colorsvec[1], lwd = 1.5, ylim = c(0, 1))
         title(main = "Filtering probabilities")
-        for (k in 2:paramHMMR$K) {
-          lines(paramHMMR$X, statHMMR$filter_prob[, k], col = colorsvec[k], lwd = 1.5) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_t)
+        if (paramHMMR$K > 1) {
+          for (k in 2:paramHMMR$K) {
+            lines(paramHMMR$X, statHMMR$filter_prob[, k], col = colorsvec[k], lwd = 1.5) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_t)
+          }
         }
       }
 
@@ -108,7 +112,7 @@ ModelHMMR <- setRefClass(
         }
 
         # Probablities of the hidden process (segmentation)
-        plot.default(paramHMMR$X, statHMMR$klas, type = "l", xlab = "x", ylab = "Estimated class labels", col = "red", lwd = 1.5)
+        plot.default(paramHMMR$X, statHMMR$klas, type = "l", xlab = "x", ylab = "Estimated class labels", col = "red", lwd = 1.5, yaxt = "n")
         axis(side = 2, at = 1:paramHMMR$K)
       }
     },

@@ -146,7 +146,8 @@ StatHMMR <- setRefClass(
 
       # Prediction probabilities = Pr(z_t|y_1,...,y_{t-1})
       predict_prob[1, ] <<- paramHMMR$prior # t=1 p (z_1)
-      predict_prob[2:paramHMMR$m, ] <<- (alpha_tk[(1:(paramHMMR$m - 1)), ] %*% paramHMMR$trans_mat) / (apply(alpha_tk[(1:(paramHMMR$m - 1)), ], 1, sum) %*% matrix(1, 1, paramHMMR$K)) # t = 2,...,n
+
+      predict_prob[2:paramHMMR$m, ] <<- (alpha_tk[(1:(paramHMMR$m - 1)), ] %*% paramHMMR$trans_mat) / (apply(as.matrix(alpha_tk[(1:(paramHMMR$m - 1)), ]), 1, sum) %*% matrix(1, 1, paramHMMR$K)) # t = 2,...,n
 
       # Predicted observations
       predicted <<- matrix(apply(predict_prob * regressors, 1, sum)) # Weighted by prediction probabilities

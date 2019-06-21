@@ -91,9 +91,11 @@ ParamHMMR <- setRefClass(
       # Initialization of the transition matrix
       maskM <- 0.5 * diag(K) # mask of order 1
 
-      for (k in 1:(K - 1)) {
-        ind <- which(maskM[k, ] != 0)
-        maskM[k, ind + 1] <- 0.5
+      if (K > 1) {
+        for (k in 1:(K - 1)) {
+          ind <- which(maskM[k, ] != 0)
+          maskM[k, ind + 1] <- 0.5
+        }
       }
       trans_mat <<- maskM
       mask <<- maskM
