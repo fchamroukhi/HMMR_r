@@ -1,10 +1,11 @@
 #' mkStochastic ensures that it is a stochastic vector, matrix or array.
 #'
 #' @details mkStochastic ensures that the giving argument is a stochastic
-#' vector, matrix or array, i.e., that the sum over the last dimension is 1.
+#'   vector, matrix or array, i.e., that the sum over the last dimension is 1.
 #'
 #' @param M A vector, matrix or array to transform.
-#' @return A vector, matrix or array for which the sum over the last dimension is 1.
+#' @return A vector, matrix or array for which the sum over the last dimension
+#'   is 1.
 mkStochastic <- function(M) {
   if (is.vector(M) == TRUE) { # Vector
     M <- normalize(M)$M

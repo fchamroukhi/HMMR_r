@@ -16,7 +16,8 @@ matrix of the Markov chain.}
 \item{n}{Numeric. Number of variables of the Markov chain.}
 }
 \value{
-Matrix of size \eqn{(n, K)} giving the distribution of the Markov chain.
+Matrix of size \eqn{(n, K)} giving the distribution of the Markov
+chain.
 }
 \description{
 hmmProcess calculates the distribution of a Markov chain
@@ -24,10 +25,13 @@ hmmProcess calculates the distribution of a Markov chain
 \details{
 hmmProcess calculates the distribution
 \eqn{P(Z_{1},\dots,Z_{n};\pi,A)} of a Markov chain
-\eqn{(Z_{1},\dots,Z_{n})} with prior probability \eqn{\pi}
-and transition matrix \eqn{A}.
+\eqn{(Z_{1},\dots,Z_{n})} with prior probability \eqn{\pi} and transition
+matrix \eqn{A}.
 
 The calculation is based on the following formula:
 
-\eqn{P(Z_{i} = k) = \sum_{l} P(Z_{i} = k, Z_{i-1} = l) = \sum_{l} P(Z_{i} = k | Z_{i-1} = l) \times P(Z_{i-1} = l) = \sum_{l} A_{lk} \times P(Z_{i-1})}{P(Z_{i} = k) = \sum_{l} P(Z_{i} = k, Z_{i-1} = l) = \sum_{l} P(Z_{i} = k | Z_{i-1} = l) x P(Z_{i-1} = l) = \sum_{l} A_{lk} x P(Z_{i-1})}
+\eqn{P(Z_{i} = k) = \sum_{l} P(Z_{i} = k, Z_{i-1} = l) = \sum_{l} P(Z_{i} =
+  k | Z_{i-1} = l) \times P(Z_{i-1} = l) = \sum_{l} A_{lk} \times
+  P(Z_{i-1})}{P(Z_{i} = k) = \sum_{l} P(Z_{i} = k, Z_{i-1} = l) = \sum_{l}
+  P(Z_{i} = k | Z_{i-1} = l) x P(Z_{i-1} = l) = \sum_{l} A_{lk} x P(Z_{i-1})}
 }

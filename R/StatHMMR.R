@@ -1,57 +1,61 @@
 #' A Reference Class which contains statistics of a HMMR model.
 #'
-#' StatHMMR contains all the parameters of a [HMMR][ParamHMMR] model.
+#' StatHMMR contains all the statistics associated to a [HMMR][ParamHMMR] model.
 #'
-#' @field tau_tk Matrix of size \eqn{(m, K)} giving the posterior probability that
-#' the observation \eqn{Y_{t}}{Y_{t}} originates from the \eqn{k}-th
-#' regression model \eqn{P(z\_t = k | Y_{1},\dots,Y_{m})}{P(z_t = k | Y_{1},\dots,Y_{m})}.
+#' @field tau_tk Matrix of size \eqn{(m, K)} giving the posterior probability
+#'   that the observation \eqn{Y_{i}} originates from the \eqn{k}-th regression
+#'   model.
 #' @field alpha_tk Matrix of size \eqn{(m, K)} giving the forwards
-#' probabilities: \eqn{P(Y_{1},\dots,Y_{t}, z\_t = k)}{P(Y_{1},\dots,Y_{t}, z_t = k)}.
+#'   probabilities: \eqn{P(Y_{1},\dots,Y_{t}, z_{t} = k)}{P(Y_{1},\dots,Y_{t},
+#'   z_{t} = k)}.
 #' @field beta_tk Matrix of size \eqn{(m, K)}, giving the backwards
-#' probabilities: \eqn{P(Y_{t+1},\dots,Y_{m} | z\_t = k)}{P(Y_{t+1},\dots,Y_{m} | z_t = k)}.
+#'   probabilities: \eqn{P(Y_{t+1},\dots,Y_{m} | z_{t} =
+#'   k)}{P(Y_{t+1},\dots,Y_{m} | z_{t} = k)}.
 #' @field xi_tkl Array of size \eqn{(m - 1, K, K)} giving the joint post
-#' probabilities: \eqn{xi_tk[t, k, l] = P(z\_t = k, z_{t-1} = l | Y)}{xi_tk[t, k, l] = P(z_t = k, z_{t-1} = l | Y)}
-#' for \eqn{t = 2,\dots,m}.
+#'   probabilities: \eqn{xi_tk[t, k, l] = P(z_{t} = k, z_{t-1} = l |
+#'   \boldsymbol{Y})}{xi_tk[t, k, l] = P(z_{t} = k, z_{t-1} = l | Y)} for \eqn{t
+#'   = 2,\dots,m}.
 #' @field f_tk Matrix of size \eqn{(m, K)} giving the cumulative distribution
-#' function \eqn{f(yt | z\_t = k)}{f(yt | z_t = k)}.
+#'   function \eqn{f(y_{t} | z{_t} = k)}{f(y_{t} | z_{t} = k)}.
 #' @field log_f_tk Matrix of size \eqn{(m, K)} giving the logarithm of the
-#' cumulative distribution `f_tk`.
+#'   cumulative distribution `f_tk`.
 #' @field loglik Numeric. Log-likelihood of the HMMR model.
 #' @field stored_loglik List. Stored values of the log-likelihood at each
-#' iteration of the EM algorithm.
-#' @field cpu_time Numeric. Average executon time of the EM algorithm. for the best run.
+#'   iteration of the EM algorithm.
+#' @field cputime Numeric. Average computing time of a EM algorithm run.
 #' @field klas Column matrix of the labels issued from `z_ik`. Its elements are
-#' \eqn{klas(i) = k}, \eqn{k = 1,\dots,K}.
+#'   \eqn{klas(i) = k}, \eqn{k = 1,\dots,K}.
 #' @field z_ik Hard segmentation logical matrix of dimension \eqn{(m, K)}
-#' obtained by the Maximum a posteriori (MAP) rule:
-#' \eqn{z_{ik} = 1 \ \textrm{if} \ z_{ik} = \textrm{arg} \ \textrm{max}_{k} \
-#' P(z_i = k | Y) = tau_ik;\ 0 \ \textrm{otherwise}}{z_ik = 1 if z_ik =
-#' arg max_k P(z_i = k | Y) = tau_ik; 0 otherwise}, \eqn{k = 1,\dots,K}.
-#' @field state_probs Matrix of size \eqn{(m, K)} giving the distribution of
-#' the Markov chain \eqn{P(z_{1},\dots,z_{m};\pi,A)}{P(z_{1},\dots,z_{m};\pi,A)}
-#' with \eqn{\pi} the prior probabilities (field `prior` of the class
-#' [ParamHMMR][ParamHMMR]) and \eqn{A} the transition matrix (field `trans_mat`
-#' of the class [ParamHMMR][ParamHMMR]) of the Markov chain.
-#' @field BIC Numeric. Value of the BIC (Bayesian Information Criterion)
-#' criterion. The formula is \eqn{BIC = loglik - nu \times
-#' \textrm{log}(m) / 2}{BIC = loglik - nu x log(m) / 2} with `nu` the
-#' degree of freedom of the HMMR model.
-#' @field AIC Numeric. Value of the AIC (Akaike Information Criterion)
-#' criterion. The formula is \eqn{AIC = loglik - nu}.
-#' @field regressors Matrix of size \eqn{(m, K)} giving the values of
-#' \eqn{\beta_{k} \times X_{i}}{\beta_{k} x X_{i}}, \eqn{i = 1,\dots,m}.
+#'   obtained by the Maximum a posteriori (MAP) rule: \eqn{z\_ik = 1 \
+#'   \textrm{if} \ z\_ik = \textrm{arg} \ \textrm{max}_{s} \ P(z_{i} = s |
+#'   \boldsymbol{Y})  = tau\_tk;\ 0 \ \textrm{otherwise}}{z_ik = 1 if z_ik = arg
+#'   max_s P(z_{i} = s | Y)  = tau_tk; 0 otherwise}, \eqn{k = 1,\dots,K}.
+#' @field state_probs Matrix of size \eqn{(m, K)} giving the distribution of the
+#'   Markov chain
+#'   \eqn{P(z_{1},\dots,z_{m};\pi,\boldsymbol{A})}{P(z_{1},\dots,z_{m};\pi,A)}
+#'   with \eqn{\pi} the prior probabilities (field `prior` of the class
+#'   [ParamHMMR][ParamHMMR]) and \eqn{\boldsymbol{A}}{A} the transition matrix
+#'   (field `trans_mat` of the class [ParamHMMR][ParamHMMR]) of the Markov
+#'   chain.
+#' @field BIC Numeric. Value of BIC (Bayesian Information Criterion).
+#' @field AIC Numeric. Value of AIC (Akaike Information Criterion).
+#' @field regressors Matrix of size \eqn{(m, K)} giving the values of the
+#'   estimated polynomial regression components.
 #' @field predict_prob Matrix of size \eqn{(m, K)} giving the prediction
-#' probabilities: \eqn{P(z\_t = k | y_{1},\dots,y_{t-1})}{P(z_t = k | y_{1},\dots,y_{t-1})}.
-#' @field predicted Row matrix of size \eqn{(m, 1)} giving the predicted
-#' observations \eqn{\sum_{k} P(z\_t = k | y_{1},\dots,y_{t-1}) \times \beta_{k} \times X_{i}}{\sum_{k} P(z_t = k | y_{1},\dots,y_{t-1}) x \betak x X_{i}}.
+#'   probabilities: \eqn{P(z_{t} = k | y_{1},\dots,y_{t-1})}{P(z_{t} = k |
+#'   y_{1},\dots,y_{t-1})}.
+#' @field predicted Row matrix of size \eqn{(m, 1)} giving the sum of the
+#'   polynomial components weighted by the prediction probabilities
+#'   `predict_prob`.
 #' @field filter_prob Matrix of size \eqn{(m, K)} giving the filtering
-#' probabilities \eqn{Pr(z\_t = k | y_{1},\dots,y_{t})}{Pr(z_t = k | y_{1},\dots,y_{t})}.
-#' @field filtered Row matrix of size \eqn{(m, 1)} giving the filetered
-#' observations \eqn{\sum_{k} P(z\_t = k | y_{1},\dots,y_{t}) \times \beta_{k} \times X_{i}}{\sum_{k} P(z_t = k | y_{1},\dots,y_{t}) x \betak x X_{i}}.
-#' @field smoothed_regressors Matrix of size \eqn{(m, K)} giving the smoothed observations:
-#' \eqn{P(z\_i = k | Y_{1},\dots,Y_{n}) \times \beta_{k} \times X_{i}}{P(z_i = k | Y_{1},\dots,Y_{n}) x \betak x X_{i}}.
-#' @field smoothed Row matrix of size \eqn{(m, 1)} giving:
-#' \eqn{\sum_{k} P(z\_i = k | Y_{1},\dots,Y_{n}) \times \beta_{k} \times X_{i}}{\sum_{k}  P(z_i = k | Y_{1},\dots,Y_{n}) x \betak x X_{i}}
+#'   probabilities \eqn{Pr(z_{t} = k | y_{1},\dots,y_{t})}{Pr(z_{t} = k |
+#'   y_{1},\dots,y_{t})}.
+#' @field filtered Row matrix of size \eqn{(m, 1)} giving the sum of the
+#'   polynomial components weighted by the filtering probabilities.
+#' @field smoothed_regressors Matrix of size \eqn{(m, K)} giving the polynomial
+#'   components weighted by the posterior probability `tau_tk`.
+#' @field smoothed Row matrix of size \eqn{(m, 1)} giving the sum of the
+#'   polynomial components weighted by the posterior probability `tau_tk`.
 #' @seealso [ParamHMMR]
 #' @export
 StatHMMR <- setRefClass(

@@ -1,20 +1,22 @@
-#' selectHMMR is used to select a HMMR model based on criteria such as BIC or AIC.
+#' selectHMMR implements the model selection procedure.
 #'
-#' @details selectHMMR is used to select the "best" HMMR model according to some
-#' criteria such as BIC or AIC. This function runs every HMMR model by varying
-#' the number of regimes `K` from `Kmin` to `Kmax` and the order of the
-#' polynomial regression `p` from `pmin` to `pmax`.
+#' @details selectHMMR implements the model selection. This function runs every
+#'   HMMR model by varying the number of regimes `K` from `Kmin` to `Kmax` and
+#'   the order of the polynomial regression `p` from `pmin` to `pmax`. The model
+#'   having the highest value of the chosen selection criterion is then
+#'   selected.
 #'
-#' @param X Numeric vector of length \emph{m} representing the covariates.
-#' @param Y Matrix of size \eqn{(n, m)} representing \emph{n} functions of `X`
-#' observed at points \eqn{1,\dots,m}.
-#' @param Kmin The minimum number of regimes (mixture components).
-#' @param Kmax The maximum number of regimes (mixture components).
+#' @param X Numeric vector of length \emph{m} representing the covariates/inputs
+#'   \eqn{x_{1},\dots,x_{m}}.
+#' @param Y Numeric vector of length \emph{m} representing the observed
+#'   response/output \eqn{y_{1},\dots,y_{m}}.
+#' @param Kmin The minimum number of regimes (c components).
+#' @param Kmax The maximum number of regimes (HMMR components).
 #' @param pmin The minimum order of the polynomial regression.
 #' @param pmax The maximum order of the polynomial regression.
-#' @param criterion The criterion used to select the "best" HMMR model.
+#' @param criterion The criterion used to select the HMMR model ("BIC", "AIC").
 #' @return selectHMMR returns an object of class [ModelHMMR][ModelHMMR]
-#' representing the "best" HMMR model according to the selected `criterion`.
+#'   representing the selected HMMR model according to the chosen `criterion`.
 #' @seealso [ModelHMMR]
 #' @export
 selectHMMR <- function(X, Y, Kmin = 1, Kmax = 10, pmin = 0, pmax = 4, criterion = c("BIC", "AIC")) {

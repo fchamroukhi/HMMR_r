@@ -6,15 +6,16 @@
 \alias{ModelHMMR}
 \title{A Reference Class which represents a fitted HMMR model.}
 \description{
-ModelHMMR represents a \link[=ModelHMMR]{HMMR} model for which parameters have
-been estimated.
+ModelHMMR represents an estimated HMMR model.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{paramHMMR}}{A \link{ParamHMMR} object. It contains the estimated values of the parameters.}
+\item{\code{paramHMMR}}{A \link{ParamHMMR} object. It contains the estimated
+values of the parameters.}
 
-\item{\code{statHMMR}}{A \link{StatHMMR} object. It contains all the statistics associated to the HMMR model.}
+\item{\code{statHMMR}}{A \link{StatHMMR} object. It contains all the statistics
+associated to the HMMR model.}
 }}
 
 \section{Methods}{
@@ -24,13 +25,17 @@ been estimated.
 \describe{
   \item{\code{what}}{The type of graph requested:
     \itemize{
-      \item "predicted"
-      \item "filtered"
-      \item "smoothed"
-      \item "regressors"
+      \item \code{"predicted" = } Predicted time series and predicted
+      regime probabilities.
+      \item \code{"filtered" = } Filtered time series and filtering
+      regime probabilities.
+      \item \code{"smoothed" = } Smoothed time series, and
+      segmentation.
+      \item \code{"regressors" = } Polynomial regression components.
     }
   }
-}}
+}
+By default, all the above graphs are produced.}
 
 \item{\code{summary()}}{Summary method.}
 }}

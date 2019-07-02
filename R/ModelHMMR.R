@@ -1,11 +1,11 @@
 #' A Reference Class which represents a fitted HMMR model.
 #'
-#' ModelHMMR represents a [HMMR][ModelHMMR] model for which parameters have
-#' been estimated.
+#' ModelHMMR represents an estimated HMMR model.
 #'
-#' @usage NULL
-#' @field paramHMMR A [ParamHMMR][ParamHMMR] object. It contains the estimated values of the parameters.
-#' @field statHMMR A [StatHMMR][StatHMMR] object. It contains all the statistics associated to the HMMR model.
+#' @field paramHMMR A [ParamHMMR][ParamHMMR] object. It contains the estimated
+#'   values of the parameters.
+#' @field statHMMR A [StatHMMR][StatHMMR] object. It contains all the statistics
+#'   associated to the HMMR model.
 #' @seealso [ParamHMMR], [StatHMMR]
 #' @export
 ModelHMMR <- setRefClass(
@@ -20,13 +20,17 @@ ModelHMMR <- setRefClass(
       \\describe{
         \\item{\\code{what}}{The type of graph requested:
           \\itemize{
-            \\item \"predicted\"
-            \\item \"filtered\"
-            \\item \"smoothed\"
-            \\item \"regressors\"
+            \\item \\code{\"predicted\" = } Predicted time series and predicted
+            regime probabilities.
+            \\item \\code{\"filtered\" = } Filtered time series and filtering
+            regime probabilities.
+            \\item \\code{\"smoothed\" = } Smoothed time series, and
+            segmentation.
+            \\item \\code{\"regressors\" = } Polynomial regression components.
           }
         }
-      }"
+      }
+      By default, all the above graphs are produced."
       what <- match.arg(what, several.ok = TRUE)
 
       oldpar <- par()[c("mfrow", "mai", "mgp")]

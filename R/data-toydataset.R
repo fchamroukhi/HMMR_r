@@ -1,11 +1,12 @@
-#' A simulated non-stationary time serie with regime changes.
+#' A simulated non-stationary time series with regime changes.
 #'
-#' A simulated non-stationary time serie with regime changes.
+#' A simulated non-stationary time series with regime changes.
+#' This time series is used for illustration.
 #'
 #' @format A data frame with 670 rows and 2 variables:
 #' \describe{
-#'   \item{X}{The covariate variable which is the time in that case.}
-#'   \item{Y}{The time serie. The latter has been generated as follows:
+#'   \item{x}{The covariate variable which is the time in that case.}
+#'   \item{y}{The time series. The latter has been generated as follows:
 #'     \itemize{
 #'       \item  First regime: 100 values of Normally distributed random numbers.
 #'       \item Second regime: 120 values of Normally distributed random numbers
@@ -20,4 +21,4 @@
 #'   }
 #' }
 #'
-"simulatedtimeserie"
+"toydataset"

@@ -10,7 +10,8 @@ mkStochastic(M)
 \item{M}{A vector, matrix or array to transform.}
 }
 \value{
-A vector, matrix or array for which the sum over the last dimension is 1.
+A vector, matrix or array for which the sum over the last dimension
+is 1.
 }
 \description{
 mkStochastic ensures that it is a stochastic vector, matrix or array.

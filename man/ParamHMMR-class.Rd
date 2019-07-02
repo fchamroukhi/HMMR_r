@@ -19,45 +19,55 @@ response/output \eqn{y_{1},\dots,y_{m}}.}
 
 \item{\code{m}}{Numeric. Length of the response/output vector \code{Y}.}
 
-\item{\code{K}}{The number of regimes (mixture components).}
+\item{\code{K}}{The number of regimes (HMMR components).}
 
 \item{\code{p}}{The order of the polynomial regression.}
 
 \item{\code{variance_type}}{Character indicating if the model is homoskedastic
-(\code{variance_type} = "homoskedastic") or heteroskedastic
-(\code{variance_type} = "heteroskedastic").}
+(\code{variance_type = "homoskedastic"}) or heteroskedastic (\code{variance_type = "heteroskedastic"}). By default the model is heteroskedastic.}
 
-\item{\code{prior}}{The prior probabilities of the Markov chain.}
+\item{\code{prior}}{The prior probabilities of the Markov chain. \code{prior} is a row
+matrix of dimension \eqn{(1, K)}.}
 
-\item{\code{trans_mat}}{The transition matrix of the Markov chain.}
+\item{\code{trans_mat}}{The transition matrix of the Markov chain. \code{trans_mat} is a
+matrix of dimension \eqn{(K, K)}.}
 
-\item{\code{beta}}{Parameters of the polynomial regressions.
-\eqn{\beta = (\beta_{1},\dots,\beta_{K})} is a matrix of dimension
-\eqn{(p + 1, K)}, with \emph{p} the order of the polynomial regression.}
+\item{\code{mask}}{Mask applied to the transition matrices \code{trans_mat}. By default,
+a mask of order one is applied.}
 
-\item{\code{sigma2}}{The variances for the \emph{K} regimes. If HMMR model is
-homoskedastic (\code{variance_type} = "homoskedastic") then \code{sigma2} is a
-matrix of size \eqn{(1, 1)}, else if HMMR model is heteroskedastic
-(\code{variance_type} = "heteroskedastic") then \code{sigma2} is a matrix of size
-\eqn{(K, 1)}.}
+\item{\code{beta}}{Parameters of the polynomial regressions. \eqn{\boldsymbol{\beta}
+  = (\boldsymbol{\beta}_{1},\dots,\boldsymbol{\beta}_{K})}{\beta =
+  (\beta_{1},\dots,\beta_{K})} is a matrix of dimension \eqn{(p + 1, K)},
+with \code{p} the order of the polynomial regression. \code{p} is fixed to 3 by
+default.}
 
-\item{\code{nu}}{The degree of freedom of the HMMR model.}
+\item{\code{sigma2}}{The variances for the \code{K} regimes. If HMMR model is
+heteroskedastic (\code{variance_type = "heteroskedastic"}) then \code{sigma2} is a
+matrix of size \eqn{(K, 1)} (otherwise HMMR model is homoskedastic
+(\code{variance_type = "homoskedastic"}) and \code{sigma2} is a matrix of size
+\eqn{(1, 1)}).}
 
-\item{\code{phi}}{A designed matrix for the polynomial regressions.}
+\item{\code{nu}}{The degree of freedom of the HMMR model representing the complexity
+of the model.}
+
+\item{\code{phi}}{A list giving the regression design matrices for the polynomial
+and the logistic regressions.}
 }}
 
 \section{Methods}{
 
 \describe{
-\item{\code{initParam(try_algo = 1)}}{Method to initialize parameters \code{prior}, \code{trans_mat},
-      \code{beta} and \code{sigma2}.
+\item{\code{initParam(try_algo = 1)}}{Method to initialize parameters \code{mask}, \code{prior},
+      \code{trans_mat}, \code{beta} and \code{sigma2}.
 
-      If try_algo = 1 then \code{beta} and \code{sigma2} are
-      initialized by segmenting uniformly into \code{K} contiguous segments
-      the response Y. Otherwise, \code{beta} and \code{sigma2} are
-      initialized by segmenting randomly the response Y into \code{K} segments.}
+      If \code{try_algo = 1} then \code{beta} and \code{sigma2} are
+      initialized by segmenting  the time series \code{Y} uniformly into
+      \code{K} contiguous segments. Otherwise, \code{beta} and
+      \code{sigma2} are initialized by segmenting randomly the time series
+      \code{Y} into \code{K} segments.}
 
-\item{\code{MStep(statHMMR)}}{Method used in the EM algorithm to learn the parameters of the HMMR model
-based on statistics provided by \code{statHMMR}.}
+\item{\code{MStep(statHMMR)}}{Method which implements the M-step of the EM algorithm to learn the
+parameters of the HMMR model based on statistics provided by
+\code{statHMMR} (which contains the E-step).}
 }}
 
