@@ -1,6 +1,6 @@
 Type: Package
 Package: HMMR
-Title: Hidden Markov Model Regression (HMMR) for Time Series Segmentation
+Title: Hidden Markov Model Regression ('HMMR') for Time Series Segmentation
 Version: 0.1.0
 Authors@R: c(person("Faicel", "Chamroukhi", role = c("aut"),
     email = "faicel.chamroukhi@unicaen.fr",
@@ -34,8 +34,8 @@ Collate:
     ParamHMMR.R
     StatHMMR.R
     ModelHMMR.R
-    ModelLearner.R
-    ModelSelection.R
+    emHMMR.R
+    selectHMMR.R
     data-realdataset.R
     data-toydataset.R
 VignetteBuilder: knitr

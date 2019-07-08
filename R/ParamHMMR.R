@@ -175,8 +175,9 @@ ParamHMMR <- setRefClass(
 
     MStep = function(statHMMR) {
       "Method which implements the M-step of the EM algorithm to learn the
-      parameters of the HMMR model based on statistics provided by
-      \\code{statHMMR} (which contains the E-step)."
+      parameters of the HMMR model based on statistics provided by the object
+      \\code{statHMMR} of class \\link{StatHMMR} (which contains the E-step)."
+
       # Updates of the Markov chain parameters
       # Initial states prob: P(Z_1 = k)
       prior <<- matrix(normalize(statHMMR$tau_tk[1, ])$M)

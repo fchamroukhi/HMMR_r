@@ -11,11 +11,11 @@ ModelHMMR represents an estimated HMMR model.
 \section{Fields}{
 
 \describe{
-\item{\code{paramHMMR}}{A \link{ParamHMMR} object. It contains the estimated
-values of the parameters.}
+\item{\code{param}}{An object of class \link{ParamHMMR}. It contains the
+estimated values of the parameters.}
 
-\item{\code{statHMMR}}{A \link{StatHMMR} object. It contains all the statistics
-associated to the HMMR model.}
+\item{\code{stat}}{An object of class \link{StatHMMR}. It contains all the
+statistics associated to the HMMR model.}
 }}
 
 \section{Methods}{
@@ -26,12 +26,17 @@ associated to the HMMR model.}
   \item{\code{what}}{The type of graph requested:
     \itemize{
       \item \code{"predicted" = } Predicted time series and predicted
-      regime probabilities.
+        regime probabilities (fields \code{predicted} and
+        \code{predict_prob} of class \link{StatHMMR}).
       \item \code{"filtered" = } Filtered time series and filtering
-      regime probabilities.
+        regime probabilities (fields \code{filtered} and
+        \code{filter_prob} of class \link{StatHMMR}).
       \item \code{"smoothed" = } Smoothed time series, and
-      segmentation.
-      \item \code{"regressors" = } Polynomial regression components.
+        segmentation (fields \code{smoothed} and \code{klas} of the
+        class {StatHMMR}).
+      \item \code{"regressors" = } Polynomial regression components
+        (fields \code{regressors} and \code{tau_tk} of class
+        \link{StatHMMR}).
     }
   }
 }

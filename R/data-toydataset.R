@@ -10,13 +10,13 @@
 #'     \itemize{
 #'       \item  First regime: 100 values of Normally distributed random numbers.
 #'       \item Second regime: 120 values of Normally distributed random numbers
-#'       with mean 7.
+#'         with mean 7.
 #'       \item Third regime: 200 values of Normally distributed random numbers
-#'       with mean 4.
+#'         with mean 4.
 #'       \item Fourth regime: 100 values of Normally distributed random numbers
-#'       with mean -2.
+#'         with mean -2.
 #'       \item Fifth regime: 150 values of Normally distributed random numbers
-#'       with mean 3.5.
+#'         with mean 3.5.
 #'     }
 #'   }
 #' }

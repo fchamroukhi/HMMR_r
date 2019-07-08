@@ -139,5 +139,5 @@ emHMMR <- function(X, Y, K, p = 3, variance_type = c("heteroskedastic", "homoske
   # Finish the computation of statistics
   statSolution$computeStats(paramSolution, cputime_total)
 
-  return(ModelHMMR(paramHMMR = paramSolution, statHMMR = statSolution))
+  return(ModelHMMR(param = paramSolution, stat = statSolution))
 }

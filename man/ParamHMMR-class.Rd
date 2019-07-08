@@ -67,7 +67,7 @@ and the logistic regressions.}
       \code{Y} into \code{K} segments.}
 
 \item{\code{MStep(statHMMR)}}{Method which implements the M-step of the EM algorithm to learn the
-parameters of the HMMR model based on statistics provided by
-\code{statHMMR} (which contains the E-step).}
+parameters of the HMMR model based on statistics provided by the object
+\code{statHMMR} of class \link{StatHMMR} (which contains the E-step).}
 }}
 

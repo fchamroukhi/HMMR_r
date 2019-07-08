@@ -48,10 +48,10 @@ iteration of the EM algorithm.}
 obtained by the Maximum a posteriori (MAP) rule: \eqn{z\_ik = 1 \
   \textrm{if} \ z\_ik = \textrm{arg} \ \textrm{max}_{s} \ P(z_{i} = s |
   \boldsymbol{Y})  = tau\_tk;\ 0 \ \textrm{otherwise}}{z_ik = 1 if z_ik = arg
-  max_s P(z_{i} = s | Y)  = tau_tk; 0 otherwise}, \eqn{k = 1,\dots,K}.}
+  max_s P(z_{i} = s | Y) = tau_tk; 0 otherwise}, \eqn{k = 1,\dots,K}.}
 
 \item{\code{state_probs}}{Matrix of size \eqn{(m, K)} giving the distribution of the
-Markov chain
+Markov chain.
 \eqn{P(z_{1},\dots,z_{m};\pi,\boldsymbol{A})}{P(z_{1},\dots,z_{m};\pi,A)}
 with \eqn{\pi} the prior probabilities (field \code{prior} of the class
 \link{ParamHMMR}) and \eqn{\boldsymbol{A}}{A} the transition matrix
@@ -87,6 +87,29 @@ components weighted by the posterior probability \code{tau_tk}.}
 polynomial components weighted by the posterior probability \code{tau_tk}.}
 }}
 
+\section{Methods}{
+
+\describe{
+\item{\code{computeLikelihood(paramHMMR)}}{Method to compute the log-likelihood based on some parameters given by
+the object \code{paramHMMR} of class \link{ParamHMMR}.}
+
+\item{\code{computeStats(paramHMMR, cputime_total)}}{Method used in the EM algorithm to compute statistics based on
+parameters provided by the object \code{paramHMMR} of class
+\link{ParamHMMR}. It also calculates the average computing time of a
+single run of the EM algorithm.}
+
+\item{\code{EStep(paramHMMR)}}{Method used in the EM algorithm to update statistics based on parameters
+provided by the object \code{paramHMMR} of class \link{ParamHMMR}
+(prior and posterior probabilities).}
+
+\item{\code{MAP()}}{MAP calculates values of the fields \code{z_ik} and \code{klas}
+      by applying the Maximum A Posteriori Bayes allocation rule.
+
+      \eqn{z\_ik = 1 \ \textrm{if} \ z\_ik = \textrm{arg} \
+      \textrm{max}_{s} \ P(z_{i} = s | \boldsymbol{Y})  = tau\_tk;\ 0 \
+      \textrm{otherwise}}{z_ik = 1 if z_ik = arg max_s P(z_{i} = s | Y) =
+      tau_tk; 0 otherwise}}
+}}
 
 \seealso{
 \link{ParamHMMR}

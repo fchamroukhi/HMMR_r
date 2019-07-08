@@ -5,11 +5,14 @@
 \alias{realdataset}
 \title{Time series representing the electrical power consumption during a switch
 operation}
-\format{A data frame with 562 rows and 3 columns: \describe{ \item{x}{The
-covariate variable which is the time in that case.} \item{y1}{A measurement
-of the electrical power consumed during a switch operation.}
+\format{A data frame with 562 rows and 3 columns:
+\describe{
+\item{x}{The covariate variable which is the time in that case.}
+\item{y1}{A measurement of the electrical power consumed during a switch
+operation.}
 \item{y2}{Another measurement of the electrical power consumed during a
-switch operation.} }}
+switch operation.}
+}}
 \usage{
 realdataset
 }
