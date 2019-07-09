@@ -39,8 +39,6 @@ cumulative distribution \code{f_tk}.}
 \item{\code{stored_loglik}}{List. Stored values of the log-likelihood at each
 iteration of the EM algorithm.}
 
-\item{\code{cputime}}{Numeric. Average computing time of a EM algorithm run.}
-
 \item{\code{klas}}{Column matrix of the labels issued from \code{z_ik}. Its elements are
 \eqn{klas(i) = k}, \eqn{k = 1,\dots,K}.}
 
@@ -93,10 +91,9 @@ polynomial components weighted by the posterior probability \code{tau_tk}.}
 \item{\code{computeLikelihood(paramHMMR)}}{Method to compute the log-likelihood based on some parameters given by
 the object \code{paramHMMR} of class \link{ParamHMMR}.}
 
-\item{\code{computeStats(paramHMMR, cputime_total)}}{Method used in the EM algorithm to compute statistics based on
+\item{\code{computeStats(paramHMMR)}}{Method used in the EM algorithm to compute statistics based on
 parameters provided by the object \code{paramHMMR} of class
-\link{ParamHMMR}. It also calculates the average computing time of a
-single run of the EM algorithm.}
+\link{ParamHMMR}.}
 
 \item{\code{EStep(paramHMMR)}}{Method used in the EM algorithm to update statistics based on parameters
 provided by the object \code{paramHMMR} of class \link{ParamHMMR}

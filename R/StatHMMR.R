@@ -22,7 +22,6 @@
 #' @field loglik Numeric. Log-likelihood of the HMMR model.
 #' @field stored_loglik List. Stored values of the log-likelihood at each
 #'   iteration of the EM algorithm.
-#' @field cputime Numeric. Average computing time of a EM algorithm run.
 #' @field klas Column matrix of the labels issued from `z_ik`. Its elements are
 #'   \eqn{klas(i) = k}, \eqn{k = 1,\dots,K}.
 #' @field z_ik Hard segmentation logical matrix of dimension \eqn{(m, K)}
@@ -69,7 +68,6 @@ StatHMMR <- setRefClass(
     log_f_tk = "matrix", # log_f_tk: [nxK] log(f(yt|zt=k))
     loglik = "numeric", # loglik: log-likelihood at convergence
     stored_loglik = "list", # stored_loglik: stored log-likelihood values during EM
-    cputime = "numeric", # cputime: for the best run
     klas = "matrix", # klas: [nx1 double]
     z_ik = "matrix", # z_ik: [nxK]
     state_probs = "matrix", # state_probs: [nxK]
@@ -95,7 +93,6 @@ StatHMMR <- setRefClass(
       log_f_tk <<- matrix(NA, paramHMMR$m, paramHMMR$K) # log_f_tk: [nxK] log(f(yt|zt=k))
       loglik <<- -Inf # loglik: log-likelihood at convergence
       stored_loglik <<- list() # stored_loglik: stored log-likelihood values during EM
-      cputime <<- Inf # cputime: for the best run
       klas <<- matrix(NA, paramHMMR$m, 1) # klas: [nx1 double]
       z_ik <<- matrix(NA, paramHMMR$m, paramHMMR$K) # z_ik: [nxK]
       state_probs <<- matrix(NA, paramHMMR$m, paramHMMR$K) # state_probs: [nxK]
@@ -140,13 +137,10 @@ StatHMMR <- setRefClass(
 
     },
 
-    computeStats = function(paramHMMR, cputime_total) {
+    computeStats = function(paramHMMR) {
       "Method used in the EM algorithm to compute statistics based on
       parameters provided by the object \\code{paramHMMR} of class
-      \\link{ParamHMMR}. It also calculates the average computing time of a
-      single run of the EM algorithm."
-
-      cputime <<- mean(cputime_total)
+      \\link{ParamHMMR}."
 
       # State sequence prob p(z_1,...,z_n;\pi,A)
       state_probs <<- hmmProcess(paramHMMR$prior, paramHMMR$trans_mat, paramHMMR$m)

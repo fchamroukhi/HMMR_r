@@ -120,7 +120,7 @@ ParamHMMR <- setRefClass(
         s <- 0 # If homoskedastic
         for (k in 1:K) {
           yk <- Y[((k - 1) * zi + 1):(k * zi)]
-          Xk <- as.matrix(phi[((k - 1) * zi + 1):(k * zi), ])
+          Xk <- phi[((k - 1) * zi + 1):(k * zi), , drop = FALSE]
 
           beta[, k] <<- solve(t(Xk) %*% Xk + (10 ^ -4) * diag(p + 1)) %*% t(Xk) %*% yk
 
@@ -145,7 +145,7 @@ ParamHMMR <- setRefClass(
         for (k in 2:K) {
           K_1 <- K_1 - 1
           temp <- seq(tk_init[k - 1] + Lmin, m - K_1 * Lmin)
-          ind <- sample(1:length(temp), length(temp))
+          ind <- sample(length(temp))
           tk_init[k] <- temp[ind[1]]
         }
         tk_init[K + 1] <- m
@@ -155,7 +155,8 @@ ParamHMMR <- setRefClass(
           i <- tk_init[k] + 1
           j <- tk_init[k + 1]
           yk <- Y[i:j]
-          Xk <- phi[i:j, ]
+
+          Xk <- phi[i:j, , drop = FALSE]
           beta[, k] <<- solve(t(Xk) %*% Xk + 1e-4 * diag(p + 1)) %*% t(Xk) %*% yk
           muk <- Xk %*% beta[, k]
           sk <- t(yk - muk) %*% (yk - muk)

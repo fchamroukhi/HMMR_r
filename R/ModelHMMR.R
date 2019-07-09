@@ -15,7 +15,7 @@ ModelHMMR <- setRefClass(
     stat = "StatHMMR"
   ),
   methods = list(
-    plot = function(what = c("predicted", "filtered", "smoothed", "regressors")) {
+    plot = function(what = c("predicted", "filtered", "smoothed", "regressors"), ...) {
       "Plot method.
       \\describe{
         \\item{\\code{what}}{The type of graph requested:
@@ -34,12 +34,13 @@ ModelHMMR <- setRefClass(
               \\link{StatHMMR}).
           }
         }
+        \\item{\\code{\\dots}}{Other graphics parameters.}
       }
       By default, all the above graphs are produced."
 
       what <- match.arg(what, several.ok = TRUE)
 
-      oldpar <- par()[c("mfrow", "mai", "mgp")]
+      oldpar <- par(no.readonly = TRUE)
       on.exit(par(oldpar), add = TRUE)
 
       yaxislim <- c(mean(param$Y) - 2 * sd(param$Y), mean(param$Y) + 2 * sd(param$Y))
@@ -49,15 +50,15 @@ ModelHMMR <- setRefClass(
       if (any(what == "predicted")) {
         # Predicted time series and predicted regime probabilities
         par(mfrow = c(2, 1), mai = c(0.6, 1, 0.5, 0.5), mgp = c(2, 1, 0))
-        plot.default(param$X, param$Y, type = "l", ylim = yaxislim, xlab = "x", ylab = "y")
-        lines(param$X, stat$predicted, type = "l", col = "red", lwd = 1.5)
+        plot.default(param$X, param$Y, type = "l", ylim = yaxislim, xlab = "x", ylab = "y", ...)
+        lines(param$X, stat$predicted, type = "l", col = "red", lwd = 1.5, ...)
         title(main = "Original and predicted HMMR time series")
 
         # Prediction probabilities of the hidden process (segmentation)
-        plot.default(param$X, stat$predict_prob[, 1], type = "l", xlab = "x", ylab = expression('P(Z'[t] == k ~ '|' ~ list(y[1],..., y[t - 1]) ~ ')'), col = colorsvec[1], lwd = 1.5, main = "Prediction probabilities", ylim = c(0, 1))
+        plot.default(param$X, stat$predict_prob[, 1], type = "l", xlab = "x", ylab = expression('P(Z'[t] == k ~ '|' ~ list(y[1],..., y[t - 1]) ~ ')'), col = colorsvec[1], lwd = 1.5, main = "Prediction probabilities", ylim = c(0, 1), ...)
         if (param$K > 1) {
           for (k in 2:param$K) {
-            lines(param$X, stat$predict_prob[, k], col = colorsvec[k], lwd = 1.5) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_{t-1})
+            lines(param$X, stat$predict_prob[, k], col = colorsvec[k], lwd = 1.5, ...) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_{t-1})
           }
         }
       }
@@ -65,16 +66,16 @@ ModelHMMR <- setRefClass(
       if (any(what == "filtered")) {
         # Filtered time series and filtering regime probabilities
         par(mfrow = c(2, 1), mai = c(0.6, 1, 0.5, 0.5), mgp = c(2, 1, 0))
-        plot.default(param$X, param$Y, type = "l", ylim = yaxislim, xlab = "x", ylab = "y")
+        plot.default(param$X, param$Y, type = "l", ylim = yaxislim, xlab = "x", ylab = "y", ...)
         title(main = "Original and filtered HMMR time series")
-        lines(param$X, stat$filtered, col = "red", lwd = 1.5)
+        lines(param$X, stat$filtered, col = "red", lwd = 1.5, ...)
 
         # Filtering probabilities of the hidden process (segmentation)
-        plot.default(param$X, stat$filter_prob[, 1], type = "l", xlab = "x", ylab = expression('P(Z'[t] == k ~ '|' ~ list(y[1],..., y[t]) ~ ')'), col = colorsvec[1], lwd = 1.5, ylim = c(0, 1))
+        plot.default(param$X, stat$filter_prob[, 1], type = "l", xlab = "x", ylab = expression('P(Z'[t] == k ~ '|' ~ list(y[1],..., y[t]) ~ ')'), col = colorsvec[1], lwd = 1.5, ylim = c(0, 1), ...)
         title(main = "Filtering probabilities")
         if (param$K > 1) {
           for (k in 2:param$K) {
-            lines(param$X, stat$filter_prob[, k], col = colorsvec[k], lwd = 1.5) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_t)
+            lines(param$X, stat$filter_prob[, k], col = colorsvec[k], lwd = 1.5, ...) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_t)
           }
         }
       }
@@ -82,7 +83,7 @@ ModelHMMR <- setRefClass(
       if (any(what == "regressors")) {
         # Data, regressors, and segmentation
         par(mfrow = c(2, 1), mai = c(0.6, 1, 0.5, 0.5), mgp = c(2, 1, 0))
-        plot.default(param$X, param$Y, type = "l", ylim = yaxislim, xlab = "x", ylab = "y")
+        plot.default(param$X, param$Y, type = "l", ylim = yaxislim, xlab = "x", ylab = "y", ...)
         title(main = "Time series, HMMR regimes, and smoothing probabilites")
         for (k in 1:param$K) {
           model_k <- stat$regressors[, k]
@@ -93,17 +94,17 @@ ModelHMMR <- setRefClass(
           active_period_model_k <- param$X[index] # prob_model_k >= prob);
 
           if (length(active_model_k) != 0) {
-            lines(param$X, model_k, col = colorsvec[k], lty = "dotted", lwd = 1.5)
-            lines(active_period_model_k, active_model_k, col = colorsvec[k], lwd = 1.5)
+            lines(param$X, model_k, col = colorsvec[k], lty = "dotted", lwd = 1.5, ...)
+            lines(active_period_model_k, active_model_k, col = colorsvec[k], lwd = 1.5, ...)
           }
         }
 
         # Probablities of the hidden process (segmentation)
-        plot.default(param$X, stat$tau_tk[, 1], type = "l", xlab = "x", ylab = expression('P(Z'[t] == k ~ '|' ~ list(y[1],..., y[n]) ~ ')'), col = colorsvec[1], lwd = 1.5, ylim = c(0, 1))
+        plot.default(param$X, stat$tau_tk[, 1], type = "l", xlab = "x", ylab = expression('P(Z'[t] == k ~ '|' ~ list(y[1],..., y[n]) ~ ')'), col = colorsvec[1], lwd = 1.5, ylim = c(0, 1), ...)
         title(main = "Smoothing probabilities")
         if (param$K > 1) {
           for (k in 2:param$K) {
-            lines(param$X, stat$tau_tk[, k], col = colorsvec[k], lwd = 1.5) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_n)
+            lines(param$X, stat$tau_tk[, k], col = colorsvec[k], lwd = 1.5, ...) # Post Probs: Pr(Z_{t}=k|y_1,\ldots,y_n)
           }
         }
       }
@@ -111,26 +112,28 @@ ModelHMMR <- setRefClass(
       if (any(what == "smoothed")) {
         # Data, regression model, and segmentation
         par(mfrow = c(2, 1), mai = c(0.6, 1, 0.5, 0.5), mgp = c(2, 1, 0))
-        plot.default(param$X, param$Y, type = "l", ylim = yaxislim, xlab = "x", ylab = "y")
+        plot.default(param$X, param$Y, type = "l", ylim = yaxislim, xlab = "x", ylab = "y", ...)
         title(main = "Original and smoothed HMMR time series, and segmentation")
-        lines(param$X, stat$smoothed, col = "red", lwd = 1.5)
+        lines(param$X, stat$smoothed, col = "red", lwd = 1.5, ...)
 
         # Transition time points
         tk <- which(diff(stat$klas) != 0)
         for (i in 1:length(tk)) {
-          abline(v = param$X[tk[i]], col = "red", lty = "dotted", lwd = 2)
+          abline(v = param$X[tk[i]], col = "red", lty = "dotted", lwd = 2, ...)
         }
 
         # Probablities of the hidden process (segmentation)
-        plot.default(param$X, stat$klas, type = "l", xlab = "x", ylab = "Estimated class labels", col = "red", lwd = 1.5, yaxt = "n")
-        axis(side = 2, at = 1:param$K)
+        plot.default(param$X, stat$klas, type = "l", xlab = "x", ylab = "Estimated class labels", col = "red", lwd = 1.5, yaxt = "n", ...)
+        axis(side = 2, at = 1:param$K, ...)
       }
     },
 
-    summary = function() {
-      "Summary method."
-
-      digits = getOption("digits")
+    summary = function(digits = getOption("digits")) {
+      "Summary method.
+      \\describe{
+        \\item{\\code{digits}}{The number of significant digits to use when
+          printing.}
+      }"
 
       title <- paste("Fitted HMMR model")
       txt <- paste(rep("-", min(nchar(title) + 4, getOption("width"))), collapse = "")
