@@ -1,7 +1,9 @@
 #' A Reference Class which contains statistics of a HMMR model.
 #'
-#' StatHMMR contains all the statistics associated to a [HMMR][ParamHMMR] model.
-#'
+#' StatHMMR contains all the statistics associated to a [HMMR][ParamHMMR] model. 
+#' It mainly includes the E-Step of the EM algorithm calculating the posterior distribution of the hidden variables (ie the smoothing probabilities), 
+#' as well as the calculation of the prediction and filtering probabilities, the log-likelhood at each step of the algorithm and the obtained values of model selection criteria..
+#' 
 #' @field tau_tk Matrix of size \eqn{(m, K)} giving the posterior probability
 #'   that the observation \eqn{Y_{i}} originates from the \eqn{k}-th regression
 #'   model.
@@ -82,9 +84,9 @@ StatHMMR <- setRefClass(
     smoothed = "matrix" # smoothed: [nx1]
   ),
   methods = list(
-
+    
     initialize = function(paramHMMR = ParamHMMR()) {
-
+      
       tau_tk <<- matrix(NA, paramHMMR$m, paramHMMR$K) # tau_tk: smoothing probs: [nxK], tau_tk(t,k) = Pr(z_i=k | y1...yn)
       alpha_tk <<- matrix(NA, paramHMMR$m, ncol = paramHMMR$K) # alpha_tk: [nxK], forwards probs: Pr(y1...yt,zt=k)
       beta_tk <<- matrix(NA, paramHMMR$m, paramHMMR$K) # beta_tk: [nxK], backwards probs: Pr(yt+1...yn|zt=k)
@@ -105,18 +107,18 @@ StatHMMR <- setRefClass(
       filtered <<- matrix(NA, paramHMMR$m, 1) # filtered: [nx1]
       smoothed_regressors <<- matrix(NA, paramHMMR$m, paramHMMR$K) # smoothed_regressors: [nxK]
       smoothed <<- matrix(NA, paramHMMR$m, 1) # smoothed: [nx1]
-
+      
     },
-
+    
     MAP = function() {
       "MAP calculates values of the fields \\code{z_ik} and \\code{klas}
       by applying the Maximum A Posteriori Bayes allocation rule.
-
+      
       \\eqn{z\\_ik = 1 \\ \\textrm{if} \\ z\\_ik = \\textrm{arg} \\
       \\textrm{max}_{s} \\ P(z_{i} = s | \\boldsymbol{Y})  = tau\\_tk;\\ 0 \\
       \\textrm{otherwise}}{z_ik = 1 if z_ik = arg max_s P(z_{i} = s | Y) =
       tau_tk; 0 otherwise}"
-
+      
       N <- nrow(tau_tk)
       K <- ncol(tau_tk)
       ikmax <- max.col(tau_tk)
@@ -127,57 +129,57 @@ StatHMMR <- setRefClass(
         klas[z_ik[, k] == 1] <<- k
       }
     },
-
+    
     computeLikelihood = function(paramHMMR) {
       "Method to compute the log-likelihood based on some parameters given by
       the object \\code{paramHMMR} of class \\link{ParamHMMR}."
-
+      
       fb <- forwardsBackwards(paramHMMR$prior, paramHMMR$trans_mat, t(f_tk))
       loglik <<- fb$loglik
-
+      
     },
-
+    
     computeStats = function(paramHMMR) {
       "Method used in the EM algorithm to compute statistics based on
       parameters provided by the object \\code{paramHMMR} of class
       \\link{ParamHMMR}."
-
+      
       # State sequence prob p(z_1,...,z_n;\pi,A)
       state_probs <<- hmmProcess(paramHMMR$prior, paramHMMR$trans_mat, paramHMMR$m)
-
+      
       # BIC, AIC, ICL
       BIC <<- loglik - paramHMMR$nu * log(paramHMMR$m) / 2
       AIC <<- loglik - paramHMMR$nu
-
+      
       # # CL(theta) : Completed-data loglikelihood
       # sum_t_log_Pz_ftk = sum(hmmr.stats.Zik.*log(state_probs.*hmmr.stats.f_tk), 2);
       # comp_loglik = sum(sum_t_log_Pz_ftk(K:end));
       # hmmr.stats.comp_loglik = comp_loglik;
       # hmmr.stats.ICL = comp_loglik - (nu*log(m)/2);
-
+      
       # Predicted, filtered, and smoothed time series
       regressors <<- paramHMMR$phi %*% paramHMMR$beta
-
+      
       # Prediction probabilities = Pr(z_t|y_1,...,y_{t-1})
       predict_prob[1, ] <<- paramHMMR$prior # t=1 p (z_1)
-
+      
       predict_prob[2:paramHMMR$m, ] <<- (alpha_tk[(1:(paramHMMR$m - 1)), ] %*% paramHMMR$trans_mat) / (apply(as.matrix(alpha_tk[(1:(paramHMMR$m - 1)), ]), 1, sum) %*% matrix(1, 1, paramHMMR$K)) # t = 2,...,n
-
+      
       # Predicted observations
       predicted <<- matrix(apply(predict_prob * regressors, 1, sum)) # Weighted by prediction probabilities
-
+      
       # Filtering probabilities = Pr(z_t|y_1,...,y_t)
       filter_prob <<- alpha_tk / (apply(alpha_tk, 1, sum) %*% matrix(1, 1, paramHMMR$K)) # Normalize(alpha_tk,2);
-
+      
       # Filetered observations
       filtered <<- as.matrix(apply(filter_prob * regressors, 1, sum)) # Weighted by filtering probabilities
-
+      
       # Smoothed observations
       smoothed_regressors <<- tau_tk * regressors
       smoothed <<- as.matrix(apply(smoothed_regressors, 1, sum))
-
+      
     },
-
+    
     EStep = function(paramHMMR) {
       "Method used in the EM algorithm to update statistics based on parameters
       provided by the object \\code{paramHMMR} of class \\link{ParamHMMR}

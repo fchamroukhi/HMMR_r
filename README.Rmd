@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-User-friendly and flexible algorithm for time series **segmentation** with a Regression model with a Hidden Markov Model Regression (HMMR).
+User-friendly and flexible algorithm for time series **segmentation** with a regression model governed by a hidden Markov process.
 
 Hidden Markov Model Regression (HMMR) for segmentation of time series with regime changes. The model assumes that the time series is governed by a sequence of hidden discrete regimes/states, where each regime/state has Gaussian regressors as observations. The model parameters are estimated by MLE via the EM algorithm.
 
