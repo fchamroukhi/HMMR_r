@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-#' emHMMR inmplemens the EM (Baum-Welch) algorithm to fit a HMMR model.
-#'
-#' emHMMR implements the maximum-likelihood parameter estimation of the HMMR model by the
-#' Expectation-Maximization (EM) algorithm, known as Baum-Welch algorithm in the context of HMMs. 
-#'
-#'
-#' @details emHMMR function implements the EM algorithm for the HMMR model. This function starts
-#'   with an initialization of the parameters done by the method `initParam` of
-#'   the class [ParamHMMR][ParamHMMR], then it alternates between the E-Step
-#'   (method of the class [StatHMMR][StatHMMR]) and the M-Step (method of the
-#'   class [ParamHMMR][ParamHMMR]) until convergence (until the relative
-#'   variation of log-likelihood between two steps of the EM algorithm is less
-#'   than the `threshold` parameter).
-=======
 #' emHMMR implemens the EM (Baum-Welch) algorithm to fit a HMMR model.
 #'
 #' emHMMR implements the maximum-likelihood parameter estimation of the HMMR
@@ -27,7 +12,6 @@
 #'   (method of the class [ParamHMMR][ParamHMMR]) until convergence (until the
 #'   relative variation of log-likelihood between two steps of the EM algorithm
 #'   is less than the `threshold` parameter).
->>>>>>> master
 #'
 #' @param X Numeric vector of length \emph{m} representing the covariates/inputs
 #'   \eqn{x_{1},\dots,x_{m}}.
@@ -37,13 +21,9 @@
 #' @param p Optional. The order of the polynomial regression. By default, `p` is
 #'   set at 3.
 #' @param variance_type Optional character indicating if the model is
-<<<<<<< HEAD
-#'   "homoskedastic" or "heteroskedastic" (i.e same variance or different variances for each of the K regmies). By default the model is
-=======
 #'   "homoskedastic" or "heteroskedastic" (i.e same variance or different
-#'   variances for each of the K regmies). By default the model is
->>>>>>> master
-#'   "heteroskedastic".
+#'   variances for each of the K regmies). By default the model is "heteroskedastic".
+#'  
 #' @param n_tries Optional. Number of runs of the EM algorithm. The solution
 #'   providing the highest log-likelihood will be returned.
 #'
@@ -88,11 +68,7 @@ emHMMR <- function(X, Y, K, p = 3, variance_type = c("heteroskedastic", "homoske
     stat <- StatHMMR(paramHMMR = param)
     
     while ((iter <= max_iter) && !converged) {
-<<<<<<< HEAD
-      
-=======
 
->>>>>>> master
       # E step : calculate the tau_tk (p(Zt=k|y1...ym;theta)) and xi t_kl (and the log-likelihood) by
       #  forwards backwards (computes the alpha_tk and beta_tk)
       stat$EStep(param)

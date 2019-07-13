@@ -31,13 +31,8 @@ library(HMMR)
 
 # Introduction
 
-<<<<<<< HEAD
-In this package, it is possible to select an HMMR based on information criteria such as 
+In this package, it is possible to select an HMMR model based on information criteria such as 
 **BIC**, **AIC** and **ICL**.
-=======
-In this package, it is possible to select models based on information criteria 
-such as **BIC**, **AIC** and **ICL**.
->>>>>>> master
 
 The selection is done on two parameters which are:
 
