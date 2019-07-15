@@ -1,29 +1,6 @@
 .DS_Store
 .Rproj.user
-<<<<<<< Updated upstream
 .Rhistory
 .RData
 .Ruserdata
 inst/doc
-=======
-
-HMMR_Documentation/bic\.png
-
-HMMR_Documentation/data\.png
-
-HMMR_Documentation/filtrer\.png
-
-HMMR_Documentation/unicaen\.png
-
-HMMR_Documentation/separationclasse\.png
-
-HMMR_Documentation/prediction\.png
-
-HMMR_Documentation/img\.jpg
-
-HMMR_Documentation/HMMR\.tex
-
-HMMR_Documentation/lissage\.png
-
-HMMR_Documentation/HMMR\.pdf
->>>>>>> Stashed changes

@@ -60,13 +60,13 @@ and the logistic regressions.}
 
 \describe{
 \item{\code{initParam(try_algo = 1)}}{Method to initialize parameters \code{mask}, \code{prior},
-      \code{trans_mat}, \code{beta} and \code{sigma2}.
+\code{trans_mat}, \code{beta} and \code{sigma2}.
 
-      If \code{try_algo = 1} then \code{beta} and \code{sigma2} are
-      initialized by segmenting  the time series \code{Y} uniformly into
-      \code{K} contiguous segments. Otherwise, \code{beta} and
-      \code{sigma2} are initialized by segmenting randomly the time series
-      \code{Y} into \code{K} segments.}
+If \code{try_algo = 1} then \code{beta} and \code{sigma2} are
+initialized by segmenting  the time series \code{Y} uniformly into
+\code{K} contiguous segments. Otherwise, \code{beta} and
+\code{sigma2} are initialized by segmenting randomly the time series
+\code{Y} into \code{K} segments.}
 
 \item{\code{MStep(statHMMR)}}{Method which implements the M-step of the EM algorithm to learn the
 parameters of the HMMR model based on statistics provided by the object

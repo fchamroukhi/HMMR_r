@@ -23,30 +23,30 @@ statistics associated to the HMMR model.}
 \describe{
 \item{\code{plot(what = c("predicted", "filtered", "smoothed", "regressors"), ...)}}{Plot method.
 \describe{
-  \item{\code{what}}{The type of graph requested:
-    \itemize{
-      \item \code{"predicted" = } Predicted time series and predicted
-        regime probabilities (fields \code{predicted} and
-        \code{predict_prob} of class \link{StatHMMR}).
-      \item \code{"filtered" = } Filtered time series and filtering
-        regime probabilities (fields \code{filtered} and
-        \code{filter_prob} of class \link{StatHMMR}).
-      \item \code{"smoothed" = } Smoothed time series, and
-        segmentation (fields \code{smoothed} and \code{klas} of the
-        class {StatHMMR}).
-      \item \code{"regressors" = } Polynomial regression components
-        (fields \code{regressors} and \code{tau_tk} of class
-        \link{StatHMMR}).
-    }
-  }
-  \item{\code{\dots}}{Other graphics parameters.}
+\item{\code{what}}{The type of graph requested:
+\itemize{
+\item \code{"predicted" = } Predicted time series and predicted
+regime probabilities (fields \code{predicted} and
+\code{predict_prob} of class \link{StatHMMR}).
+\item \code{"filtered" = } Filtered time series and filtering
+regime probabilities (fields \code{filtered} and
+\code{filter_prob} of class \link{StatHMMR}).
+\item \code{"smoothed" = } Smoothed time series, and
+segmentation (fields \code{smoothed} and \code{klas} of the
+class {StatHMMR}).
+\item \code{"regressors" = } Polynomial regression components
+(fields \code{regressors} and \code{tau_tk} of class
+\link{StatHMMR}).
+}
+}
+\item{\code{\dots}}{Other graphics parameters.}
 }
 By default, all the graphs mentioned above are produced.}
 
 \item{\code{summary(digits = getOption("digits"))}}{Summary method.
 \describe{
-  \item{\code{digits}}{The number of significant digits to use when
-    printing.}
+\item{\code{digits}}{The number of significant digits to use when
+printing.}
 }}
 }}
 
