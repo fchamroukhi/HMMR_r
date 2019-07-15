@@ -21,25 +21,29 @@ statistics associated to the HMMR model.}
 \section{Methods}{
 
 \describe{
-\item{\code{plot(what = c("predicted", "filtered", "smoothed", "regressors"), ...)}}{Plot method.
+\item{\code{plot(what = c("predicted", "filtered", "smoothed", "regressors",
+  "loglikelihood"), ...)}}{Plot method.
 \describe{
-\item{\code{what}}{The type of graph requested:
-\itemize{
-\item \code{"predicted" = } Predicted time series and predicted
-regime probabilities (fields \code{predicted} and
-\code{predict_prob} of class \link{StatHMMR}).
-\item \code{"filtered" = } Filtered time series and filtering
-regime probabilities (fields \code{filtered} and
-\code{filter_prob} of class \link{StatHMMR}).
-\item \code{"smoothed" = } Smoothed time series, and
-segmentation (fields \code{smoothed} and \code{klas} of the
-class {StatHMMR}).
-\item \code{"regressors" = } Polynomial regression components
-(fields \code{regressors} and \code{tau_tk} of class
-\link{StatHMMR}).
-}
-}
-\item{\code{\dots}}{Other graphics parameters.}
+  \item{\code{what}}{The type of graph requested:
+    \itemize{
+      \item \code{"predicted" = } Predicted time series and predicted
+        regime probabilities (fields \code{predicted} and
+        \code{predict_prob} of class \link{StatHMMR}).
+      \item \code{"filtered" = } Filtered time series and filtering
+        regime probabilities (fields \code{filtered} and
+        \code{filter_prob} of class \link{StatHMMR}).
+      \item \code{"smoothed" = } Smoothed time series, and
+        segmentation (fields \code{smoothed} and \code{klas} of the
+        class {StatHMMR}).
+      \item \code{"regressors" = } Polynomial regression components
+        (fields \code{regressors} and \code{tau_tk} of class
+      \link{StatHMMR}).
+      \item \code{"loglikelihood" = } Value of the log-likelihood for
+        each iteration (field \code{stored_loglik} of class
+        \link{StatHMMR}).
+    }
+  }
+  \item{\code{\dots}}{Other graphics parameters.}
 }
 By default, all the graphs mentioned above are produced.}
 

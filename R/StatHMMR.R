@@ -25,8 +25,8 @@
 #' @field log_f_tk Matrix of size \eqn{(m, K)} giving the logarithm of the
 #'   cumulative distribution `f_tk`.
 #' @field loglik Numeric. Log-likelihood of the HMMR model.
-#' @field stored_loglik List. Stored values of the log-likelihood at each
-#'   iteration of the EM algorithm.
+#' @field stored_loglik Numeric vector. Stored values of the log-likelihood at
+#'   each iteration of the EM algorithm.
 #' @field klas Column matrix of the labels issued from `z_ik`. Its elements are
 #'   \eqn{klas(i) = k}, \eqn{k = 1,\dots,K}.
 #' @field z_ik Hard segmentation logical matrix of dimension \eqn{(m, K)}
@@ -72,7 +72,7 @@ StatHMMR <- setRefClass(
     f_tk = "matrix", # f_tk: [nxK] f(yt|zt=k)
     log_f_tk = "matrix", # log_f_tk: [nxK] log(f(yt|zt=k))
     loglik = "numeric", # loglik: log-likelihood at convergence
-    stored_loglik = "list", # stored_loglik: stored log-likelihood values during EM
+    stored_loglik = "numeric", # stored_loglik: stored log-likelihood values during EM
     klas = "matrix", # klas: [nx1 double]
     z_ik = "matrix", # z_ik: [nxK]
     state_probs = "matrix", # state_probs: [nxK]
@@ -97,7 +97,7 @@ StatHMMR <- setRefClass(
       f_tk <<- matrix(NA, paramHMMR$m, paramHMMR$K) # f_tk: [nxK] f(yt|zt=k)
       log_f_tk <<- matrix(NA, paramHMMR$m, paramHMMR$K) # log_f_tk: [nxK] log(f(yt|zt=k))
       loglik <<- -Inf # loglik: log-likelihood at convergence
-      stored_loglik <<- list() # stored_loglik: stored log-likelihood values during EM
+      stored_loglik <<- numeric() # stored_loglik: stored log-likelihood values during EM
       klas <<- matrix(NA, paramHMMR$m, 1) # klas: [nx1 double]
       z_ik <<- matrix(NA, paramHMMR$m, paramHMMR$K) # z_ik: [nxK]
       state_probs <<- matrix(NA, paramHMMR$m, paramHMMR$K) # state_probs: [nxK]

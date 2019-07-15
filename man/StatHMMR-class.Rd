@@ -41,8 +41,8 @@ cumulative distribution \code{f_tk}.}
 
 \item{\code{loglik}}{Numeric. Log-likelihood of the HMMR model.}
 
-\item{\code{stored_loglik}}{List. Stored values of the log-likelihood at each
-iteration of the EM algorithm.}
+\item{\code{stored_loglik}}{Numeric vector. Stored values of the log-likelihood at
+each iteration of the EM algorithm.}
 
 \item{\code{klas}}{Column matrix of the labels issued from \code{z_ik}. Its elements are
 \eqn{klas(i) = k}, \eqn{k = 1,\dots,K}.}

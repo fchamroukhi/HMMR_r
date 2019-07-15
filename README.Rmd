@@ -12,10 +12,11 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-"
 )
 ```
-## Overview
 
 <!-- badges: start -->
 <!-- badges: end -->
+
+## Overview
 
 User-friendly and flexible algorithm for time series **segmentation** with a regression model governed by a hidden Markov process.
 
