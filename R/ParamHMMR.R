@@ -1,7 +1,7 @@
 #' A Reference Class which contains parameters of a HMMR model.
 #'
-#' ParamHMMR contains all the parameters of a HMMR model. The paramerts are 
-#' calculated by the initialization Method and then updated by the Method 
+#' ParamHMMR contains all the parameters of a HMMR model. The parameters are
+#' calculated by the initialization Method and then updated by the Method
 #' implementing the M-Step of the EM algorithm.
 #'
 #' @field X Numeric vector of length \emph{m} representing the covariates/inputs
@@ -42,12 +42,12 @@ ParamHMMR <- setRefClass(
     Y = "numeric",
     m = "numeric",
     phi = "matrix",
-    
+
     K = "numeric", # Number of regimes
     p = "numeric", # Dimension of beta (order of polynomial regression)
     variance_type = "character",
     nu = "numeric", # Degree of freedom
-    
+
     prior = "matrix",
     trans_mat = "matrix",
     beta = "matrix",
@@ -55,25 +55,25 @@ ParamHMMR <- setRefClass(
     mask = "matrix"
   ),
   methods = list(
-    
+
     initialize = function(X = numeric(), Y = numeric(1), K = 2, p = 3, variance_type = "heteroskedastic") {
-      
+
       X <<- X
       Y <<- Y
       m <<- length(Y)
       phi <<- designmatrix(x = X, p = p)$XBeta
-      
+
       K <<- K
       p <<- p
       variance_type <<- variance_type
-      
+
       if (variance_type == "homoskedastic") {
         nu <<- K - 1 + K * (K - 1) + K * (p + 1) + 1
       }
       else{
         nu <<- K - 1 + K * (K - 1) + K * (p + 1) + K
       }
-      
+
       prior <<- matrix(NA, ncol = K)
       trans_mat <<- matrix(NA, K, K)
       beta <<- matrix(NA, p + 1, K)
@@ -84,24 +84,24 @@ ParamHMMR <- setRefClass(
         sigma2 <<- matrix(NA, K)
       }
       mask <<- matrix(NA, K, K)
-      
+
     },
-    
+
     initParam = function(try_algo = 1) {
       "Method to initialize parameters \\code{mask}, \\code{prior},
       \\code{trans_mat}, \\code{beta} and \\code{sigma2}.
-      
+
       If \\code{try_algo = 1} then \\code{beta} and \\code{sigma2} are
       initialized by segmenting  the time series \\code{Y} uniformly into
       \\code{K} contiguous segments. Otherwise, \\code{beta} and
       \\code{sigma2} are initialized by segmenting randomly the time series
       \\code{Y} into \\code{K} segments."
-      
+
       # Initialization taking into account the constraint:
-      
+
       # Initialization of the transition matrix
       maskM <- 0.5 * diag(K) # mask of order 1
-      
+
       if (K > 1) {
         for (k in 1:(K - 1)) {
           ind <- which(maskM[k, ] != 0)
@@ -110,22 +110,22 @@ ParamHMMR <- setRefClass(
       }
       trans_mat <<- maskM
       mask <<- maskM
-      
+
       # Initialization of the initial distribution
       prior <<- matrix(c(1, rep(0, K - 1)))
-      
+
       # Initialization of regression coefficients and variances
       if (try_algo == 1) { # Uniform segmentation into K contiguous segments, and then a regression
-        
+
         zi <- round(m / K) - 1
-        
+
         s <- 0 # If homoskedastic
         for (k in 1:K) {
           yk <- Y[((k - 1) * zi + 1):(k * zi)]
           Xk <- phi[((k - 1) * zi + 1):(k * zi), , drop = FALSE]
-          
+
           beta[, k] <<- solve(t(Xk) %*% Xk + (10 ^ -4) * diag(p + 1)) %*% t(Xk) %*% yk
-          
+
           muk <- Xk %*% beta[, k]
           sk <- t(yk - muk) %*% (yk - muk)
           if (variance_type == "homoskedastic") {
@@ -138,7 +138,7 @@ ParamHMMR <- setRefClass(
         }
       }
       else{# Random segmentation into contiguous segments, and then a regression
-        
+
         Lmin <- p + 1 + 1 # Minimum length of a segment
         tk_init <- rep(0, K)
         tk_init <- t(tk_init)
@@ -151,60 +151,60 @@ ParamHMMR <- setRefClass(
           tk_init[k] <- temp[ind[1]]
         }
         tk_init[K + 1] <- m
-        
+
         s <- 0
         for (k in 1:K) {
           i <- tk_init[k] + 1
           j <- tk_init[k + 1]
           yk <- Y[i:j]
-          
+
           Xk <- phi[i:j, , drop = FALSE]
           beta[, k] <<- solve(t(Xk) %*% Xk + 1e-4 * diag(p + 1)) %*% t(Xk) %*% yk
           muk <- Xk %*% beta[, k]
           sk <- t(yk - muk) %*% (yk - muk)
-          
+
           if (variance_type == "homoskedastic") {
             s <- s + sk
             sigma2 <<- s / m
-            
+
           }
           else{
             sigma2[k] <<- sk / length(yk)
           }
         }
       }
-      
+
     },
-    
+
     MStep = function(statHMMR) {
       "Method which implements the M-step of the EM algorithm to learn the
       parameters of the HMMR model based on statistics provided by the object
       \\code{statHMMR} of class \\link{StatHMMR} (which contains the E-step)."
-      
+
       # Updates of the Markov chain parameters
       # Initial states prob: P(Z_1 = k)
       prior <<- matrix(normalize(statHMMR$tau_tk[1, ])$M)
-      
+
       # Transition matrix: P(Zt=i|Zt-1=j) (A_{k\ell})
       trans_mat <<- mkStochastic(apply(statHMMR$xi_tkl, c(1, 2), sum))
-      
+
       # For segmental HMMR: p(z_t = k| z_{t-1} = \ell) = zero if k<\ell (no back) of if k >= \ell+2 (no jumps)
       trans_mat <<- mkStochastic(mask * trans_mat)
       # Update of the regressors (reg coefficients betak and the variance(s) sigma2k)
-      
+
       s <- 0 # If homoskedastic
       for (k in 1:K) {
         weights <- statHMMR$tau_tk[, k]
-        
+
         nk <- sum(weights) # Expected cardinal number of state k
         Xk <- phi * (sqrt(weights) %*% matrix(1, 1, p + 1)) # [n*(p+1)]
         yk <- Y * sqrt(weights) # dimension: [(nx1).*(nx1)] = [nx1]
-        
+
         # Regression coefficients
         lambda <- 1e-9 # If a bayesian prior on the beta's
         bk <- (solve(t(Xk) %*% Xk + lambda * diag(p + 1)) %*% t(Xk)) %*% yk
         beta[, k] <<- bk
-        
+
         # Variance(s)
         z <- sqrt(weights) * (Y - phi %*% bk)
         sk <- t(z) %*% z
@@ -216,7 +216,7 @@ ParamHMMR <- setRefClass(
           sigma2[k] <<- sk / nk
         }
       }
-      
+
     }
   )
 )
