@@ -18,19 +18,28 @@
 #' @param pmin The minimum order of the polynomial regression.
 #' @param pmax The maximum order of the polynomial regression.
 #' @param criterion The criterion used to select the HMMR model ("BIC", "AIC").
+#' @param verbose Optional. A logical value indicating whether or not a summary
+#' of the selected model should be displayed.
 #' @return selectHMMR returns an object of class [ModelHMMR][ModelHMMR]
 #'   representing the selected HMMR model according to the chosen `criterion`.
 #' @seealso [ModelHMMR]
+#' @examples
+#' data(toydataset)
+#'
+#' selectedhmmr <- selectHMMR(X = toydataset$x, Y = toydataset$y,
+#'                            Kmin = 2, Kmax = 6, pmin = 0, pmax = 2)
+#'
+#' selectedhmmr$plot()
 #' @export
-selectHMMR <- function(X, Y, Kmin = 1, Kmax = 10, pmin = 0, pmax = 4, criterion = c("BIC", "AIC")) {
-  
+selectHMMR <- function(X, Y, Kmin = 1, Kmax = 10, pmin = 0, pmax = 4, criterion = c("BIC", "AIC"), verbose = TRUE) {
+
   criterion <- match.arg(criterion)
-  
+
   vhmmr <- Vectorize(function(K, p, X1 = X, Y1 = Y) emHMMR(X = X1, Y = Y1, K, p),
                      vectorize.args = c("K", "p"))
-  
+
   hmmr <- outer(Kmin:Kmax, pmin:pmax, vhmmr)
-  
+
   if (criterion == "BIC") {
     results <- apply(hmmr, 1:2, function(x) x[[1]]$stat$BIC)
   } else {
@@ -38,17 +47,19 @@ selectHMMR <- function(X, Y, Kmin = 1, Kmax = 10, pmin = 0, pmax = 4, criterion 
   }
   rownames(results) <- sapply(Kmin:Kmax, function(x) paste0("(K = ", x, ")"))
   colnames(results) <- sapply(pmin:pmax, function(x) paste0("(p = ", x, ")"))
-  
-  
+
+
   selected <- hmmr[which(results == max(results), arr.ind = T)][[1]]
-  
-  cat(paste0("The HMMR model selected via the \"", criterion, "\" has K = ",
-             selected$param$K, " regimes \n and the order of the ",
-             "polynomial regression is p = ", selected$param$p, "."))
-  cat("\n")
-  cat(paste0("BIC = ", selected$stat$BIC, "\n"))
-  cat(paste0("AIC = ", selected$stat$AIC, "\n"))
-  
+
+  if (verbose) {
+    cat(paste0("The HMMR model selected via the \"", criterion, "\" has K = ",
+               selected$param$K, " regimes \n and the order of the ",
+               "polynomial regression is p = ", selected$param$p, "."))
+    cat("\n")
+    cat(paste0("BIC = ", selected$stat$BIC, "\n"))
+    cat(paste0("AIC = ", selected$stat$AIC, "\n"))
+  }
+
   return(selected)
-  
+
 }
