@@ -7,10 +7,12 @@
 #' @field stat An object of class [StatHMMR][StatHMMR]. It contains all the
 #'   statistics associated to the HMMR model.
 #' @seealso [ParamHMMR], [StatHMMR]
-#' @examples
-#' data(toydataset)
+#' @export
 #'
-#' hmmr <- emHMMR(toydataset$x, toydataset$y, K = 5, p = 1, verbose = TRUE)
+#' @examples
+#' data(univtoydataset)
+#'
+#' hmmr <- emHMMR(univtoydataset$x, univtoydataset$y, K = 5, p = 1, verbose = TRUE)
 #'
 #' # hmmr is a ModelHMMR object. It contains some methods such as 'summary' and 'plot'
 #' hmmr$summary()
@@ -23,8 +25,6 @@
 #'
 #' # Parameters of the polynomial regressions:
 #' hmmr$param$beta
-#'
-#' @export
 ModelHMMR <- setRefClass(
   "ModelHMMR",
   fields = list(

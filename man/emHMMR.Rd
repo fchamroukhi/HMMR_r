@@ -61,8 +61,8 @@ relative variation of log-likelihood between two steps of the EM algorithm
 is less than the \code{threshold} parameter).
 }
 \examples{
-data(toydataset)
-hmmr <- emHMMR(toydataset$x, toydataset$y, K = 5, p = 1, verbose = TRUE)
+data(univtoydataset)
+hmmr <- emHMMR(univtoydataset$x, univtoydataset$y, K = 5, p = 1, verbose = TRUE)
 
 hmmr$summary()
 

@@ -46,9 +46,9 @@ model having the highest value of the chosen selection criterion is then
 selected.
 }
 \examples{
-data(toydataset)
+data(univtoydataset)
 
-selectedhmmr <- selectHMMR(X = toydataset$x, Y = toydataset$y,
+selectedhmmr <- selectHMMR(X = univtoydataset$x, Y = univtoydataset$y,
                            Kmin = 2, Kmax = 6, pmin = 0, pmax = 2)
 
 selectedhmmr$plot()

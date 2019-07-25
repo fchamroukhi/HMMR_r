@@ -55,9 +55,9 @@ printing.}
 }}
 
 \examples{
-data(toydataset)
+data(univtoydataset)
 
-hmmr <- emHMMR(toydataset$x, toydataset$y, K = 5, p = 1, verbose = TRUE)
+hmmr <- emHMMR(univtoydataset$x, univtoydataset$y, K = 5, p = 1, verbose = TRUE)
 
 # hmmr is a ModelHMMR object. It contains some methods such as 'summary' and 'plot'
 hmmr$summary()
@@ -70,7 +70,6 @@ hmmr$stat$loglik
 
 # Parameters of the polynomial regressions:
 hmmr$param$beta
-
 }
 \seealso{
 \link{ParamHMMR}, \link{StatHMMR}
