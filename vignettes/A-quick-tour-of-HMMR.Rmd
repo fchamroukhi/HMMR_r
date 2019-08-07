@@ -31,8 +31,13 @@ library(HMMR)
 
 # Introduction
 
-**HMMR** is an R package for flexible and user-friendly probabilistic segmentation of time series (or structured longitudinal data) with regime changes by a regression model governed by a hidden Markov process, fitted by the EM (Baum-Welch) algorithm.
-This document gives a quick tour of **HMMR** (version `r packageVersion("HMMR")`) functionalities. It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. 
+**HMMR** is an R package for flexible and user-friendly probabilistic 
+segmentation of time series (or structured longitudinal data) with regime 
+changes by a regression model governed by a hidden Markov process, fitted by 
+the EM (Baum-Welch) algorithm.
+This document gives a quick tour of **HMMR** (version `r packageVersion("HMMR")`)
+functionalities. It was written in R Markdown, using the
+[knitr](https://cran.r-project.org/package=knitr) package for production.
 
 See `help(package="HMMR")` for further details and references provided by `citation("HMMR")`.
 
@@ -40,6 +45,8 @@ See `help(package="HMMR")` for further details and references provided by `citat
 
 ```{r}
 data("toydataset")
+x <- toydataset$x
+y <- toydataset$y
 ```
 
 # Set up HMMR model parameters
@@ -62,7 +69,7 @@ verbose <- TRUE
 # Estimation
 
 ```{r}
-hmmr <- emHMMR(toydataset$x, toydataset$y, K, p, variance_type, n_tries, 
+hmmr <- emHMMR(X = x, Y = y, K, p, variance_type, n_tries, 
                max_iter, threshold, verbose)
 ```
 

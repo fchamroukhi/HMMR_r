@@ -26,10 +26,11 @@
 #' @export
 #'
 #' @examples
-#' data(univtoydataset)
+#' data(toydataset)
+#' x <- toydataset$x
+#' y <- toydataset$y
 #'
-#' selectedhmmr <- selectHMMR(X = univtoydataset$x, Y = univtoydataset$y,
-#'                            Kmin = 2, Kmax = 6, pmin = 0, pmax = 2)
+#' selectedhmmr <- selectHMMR(X = x, Y = y, Kmin = 2, Kmax = 6, pmin = 0, pmax = 2)
 #'
 #' selectedhmmr$plot()
 selectHMMR <- function(X, Y, Kmin = 1, Kmax = 10, pmin = 0, pmax = 4, criterion = c("BIC", "AIC"), verbose = TRUE) {

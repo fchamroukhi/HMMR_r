@@ -44,13 +44,15 @@
 #' @export
 #'
 #' @examples
-#' data(univtoydataset)
-#' hmmr <- emHMMR(univtoydataset$x, univtoydataset$y, K = 5, p = 1, verbose = TRUE)
+#' data(toydataset)
+#' x <- toydataset$x
+#' y <- toydataset$y
+#'
+#' hmmr <- emHMMR(X = x, Y = y, K = 5, p = 1, verbose = TRUE)
 #'
 #' hmmr$summary()
 #'
 #' hmmr$plot()
-#'
 emHMMR <- function(X, Y, K, p = 3, variance_type = c("heteroskedastic", "homoskedastic"), n_tries = 1, max_iter = 1500, threshold = 1e-6, verbose = FALSE) {
 
   nb_good_try <- 0
@@ -95,20 +97,20 @@ emHMMR <- function(X, Y, K, p = 3, variance_type = c("heteroskedastic", "homoske
       stat$loglik <- stat$loglik + log(lambda)
 
       if (verbose) {
-        cat(paste0("EM: Iteration : ", iter, " || log-likelihood : "  , stat$loglik, "\n"))
+        message("EM - HMMR: Iteration: ", iter, " | log-likelihood: "  , stat$loglik)
       }
 
       if ((prev_loglik - stat$loglik) > 1e-4) {
         top <- top + 1
         if (top == 10) {
-          warning(paste0("EM log-likelihood is decreasing from ", prev_loglik, "to ", stat$loglik, " !"))
+          warning("EM log-likelihood is decreasing from ", prev_loglik, "to ", stat$loglik, "!")
         }
       }
 
       converged <- (abs(stat$loglik - prev_loglik) / abs(prev_loglik) < threshold)
       if (is.na(converged)) {
         converged <- FALSE
-      } # Basically for the first iteration when prev_loglik is Inf
+      } # Basically for the first iteration when prev_loglik is -inf
 
       prev_loglik <- stat$loglik
       stat$stored_loglik <- c(stat$stored_loglik, stat$loglik)
@@ -116,7 +118,7 @@ emHMMR <- function(X, Y, K, p = 3, variance_type = c("heteroskedastic", "homoske
     } # End of the EM loop
 
     if (n_tries > 1 && verbose) {
-      cat(paste0("Max value of the log-likelihood: ", stat$loglik, "\n\n"))
+      message("Max value of the log-likelihood: ", stat$loglik, "\n\n")
     }
 
     if (length(param$beta) != 0) {
@@ -133,19 +135,19 @@ emHMMR <- function(X, Y, K, p = 3, variance_type = c("heteroskedastic", "homoske
     }
 
     if (total_nb_try > 500) {
-      stop(paste("can't obtain the requested number of classes"))
+      stop("can't obtain the requested number of classes")
     }
 
   }
 
   if (n_tries > 1) {
-    cat(paste0("Best value of the log-likelihood: ", statSolution$loglik, "\n"))
+    message("Best value of the log-likelihood: ", statSolution$loglik, "\n")
   }
 
   # Smoothing state sequences : argmax(smoothing probs), and corresponding binary allocations partition
   statSolution$MAP()
 
-  # Finish the computation of statistics
+  # Finish the computation of the model statistics
   statSolution$computeStats(paramSolution)
 
   return(ModelHMMR(param = paramSolution, stat = statSolution))
